@@ -22,6 +22,8 @@ textarea,#view{width:100%;min-height:200px;font:17px/1.7 system-ui,sans-serif;ba
 mark{background:var(--hl);color:#111;font-weight:700;border-radius:4px;padding:1px 3px;box-shadow:0 0 0 2px var(--hl)}
 label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
 select,input[type=range]{width:100%}
+input[type=search]{width:100%;padding:8px;margin-bottom:6px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:15px}
+.tc{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:15px;color:var(--tx)}.tc input{width:20px;height:20px;accent-color:var(--ac)}
 select{padding:8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:15px}
 .r{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 button{flex:1;min-width:90px;padding:12px;border:0;border-radius:8px;font-size:15px;font-weight:600;background:var(--ac);color:#fff;cursor:pointer}
@@ -35,12 +37,16 @@ button.s{background:var(--bd);color:var(--tx)}
 <div class="c">
 <textarea id="t" placeholder="Paste or type text here..."></textarea>
 <div id="view"></div>
+<label>Read in (language)</label>
+<input type="search" id="ls" placeholder="Search language...">
+<select id="lg"></select>
 <label>Voice</label>
 <select id="v"></select>
 <label>Speed: <span id="rv">1.0</span>x</label>
 <input type="range" id="rt" min="0.5" max="2" step="0.1" value="1">
 <label>Pitch: <span id="pv">1.0</span></label>
 <input type="range" id="pt" min="0.5" max="2" step="0.1" value="1">
+<label class="tc"><input type="checkbox" id="tc">Teacher mode (lecture + extra explanation)</label>
 <div class="r">
 <button id="play">Play</button>
 <button id="pause" class="s">Pause</button>
@@ -52,15 +58,40 @@ button.s{background:var(--bd);color:var(--tx)}
 <script>
 (function(){
 var S=window.speechSynthesis,$=function(i){return document.getElementById(i)},
-T=$('t'),V=$('view'),sel=$('v'),rt=$('rt'),pt=$('pt'),msg=$('msg');
+T=$('t'),V=$('view'),sel=$('v'),ls=$('ls'),lg=$('lg'),rt=$('rt'),pt=$('pt'),msg=$('msg');
 if(!S){msg.textContent='Text-to-speech is not supported in this browser.';return;}
 var paras=[],orig_='',tm=null,sid=0,paused=false,pf=false,mpc1=55,cal=false,cur=null,bc=0,t0=0,est={k:0,w:[],D:0};
-function load(){
-var vs=S.getVoices();
-sel.innerHTML='<option value="-2">Auto (match text language)</option><option value="-1">Device default</option>';
-vs.forEach(function(x,i){var o=document.createElement('option');o.value=i;o.textContent=x.name+' ('+x.lang+')';sel.appendChild(o);});
+var LANGS=[
+['ur','Urdu','اردو','ur-PK'],['en','English','English','en-US'],['hi','Hindi','हिन्दी','hi-IN'],['ar','Arabic','العربية','ar-SA'],['pa','Punjabi','ਪੰਜਾਬੀ','pa-IN'],['ps','Pashto','پښتو','ps-AF'],['sd','Sindhi','سنڌي','sd-PK'],['fa','Persian','فارسی','fa-IR'],['bn','Bengali','বাংলা','bn-BD'],
+['zh-CN','Chinese (Simplified)','中文','zh-CN','zh'],['zh-TW','Chinese (Traditional)','繁體中文','zh-TW','zh'],['fr','French','Français','fr-FR'],['de','German','Deutsch','de-DE'],['es','Spanish','Español','es-ES'],['pt','Portuguese','Português','pt-PT'],['it','Italian','Italiano','it-IT'],['ru','Russian','Русский','ru-RU'],['tr','Turkish','Türkçe','tr-TR'],['ja','Japanese','日本語','ja-JP'],['ko','Korean','한국어','ko-KR'],
+['id','Indonesian','Bahasa Indonesia','id-ID','id|in'],['ms','Malay','Bahasa Melayu','ms-MY'],['nl','Dutch','Nederlands','nl-NL'],['pl','Polish','Polski','pl-PL'],['uk','Ukrainian','Українська','uk-UA'],['el','Greek','Ελληνικά','el-GR'],['he','Hebrew','עברית','he-IL','he|iw'],['th','Thai','ไทย','th-TH'],['vi','Vietnamese','Tiếng Việt','vi-VN'],
+['sv','Swedish','Svenska','sv-SE'],['no','Norwegian','Norsk','nb-NO','nb|no|nn'],['da','Danish','Dansk','da-DK'],['fi','Finnish','Suomi','fi-FI'],['cs','Czech','Čeština','cs-CZ'],['ro','Romanian','Română','ro-RO'],['hu','Hungarian','Magyar','hu-HU'],['bg','Bulgarian','Български','bg-BG'],['hr','Croatian','Hrvatski','hr-HR'],['sk','Slovak','Slovenčina','sk-SK'],['ca','Catalan','Català','ca-ES'],
+['ta','Tamil','தமிழ்','ta-IN'],['te','Telugu','తెలుగు','te-IN'],['mr','Marathi','मराठी','mr-IN'],['gu','Gujarati','ગુજરાતી','gu-IN'],['kn','Kannada','ಕನ್ನಡ','kn-IN'],['ml','Malayalam','മലയാളം','ml-IN'],['ne','Nepali','नेपाली','ne-NP'],['si','Sinhala','සිංහල','si-LK'],['sw','Swahili','Kiswahili','sw-KE'],['af','Afrikaans','Afrikaans','af-ZA'],['tl','Filipino','Filipino','fil-PH','fil|tl']
+].map(function(r){return {tl:r[0],n:r[1],nn:r[2],sc:r[3],sp:r[4]||r[3].split('-')[0]}});
+var tgt=null;
+function curLang(){for(var i=0;i<LANGS.length;i++){if(LANGS[i].tl===lg.value)return LANGS[i];}return null;}
+function preOf(L){return new RegExp('^(?:'+L.sp+')','i');}
+function fillLangs(){
+var q=ls.value.trim().toLowerCase(),prev=lg.value,h='<option value="">Same as text (no translation)</option>',first='',has=false;
+LANGS.forEach(function(L){
+if(q&&(L.n+' '+L.nn+' '+L.tl).toLowerCase().indexOf(q)<0)return;
+if(!first)first=L.tl;if(L.tl===prev)has=true;
+h+='<option value="'+L.tl+'">'+L.n+' ('+L.nn+')</option>';
+});
+lg.innerHTML=h;
+lg.value=(q&&first&&!has)?first:(has?prev:'');
+if(q&&first&&lg.value===''&&!has)lg.value=first;
+fillVoices();
 }
-load();S.onvoiceschanged=load;
+function fillVoices(){
+var vs=S.getVoices(),L=curLang(),pre=L?preOf(L):null,prev=sel.value,n=0;
+sel.innerHTML='<option value="-2">Auto (best voice)</option><option value="-1">Device default</option>';
+vs.forEach(function(x,i){if(pre&&!pre.test(x.lang))return;var o=document.createElement('option');o.value=i;o.textContent=x.name+' ('+x.lang+')';sel.appendChild(o);n++;});
+for(var j=0;j<sel.options.length;j++){if(sel.options[j].value===prev){sel.value=prev;break;}}
+}
+ls.oninput=fillLangs;
+lg.onchange=fillVoices;
+fillLangs();S.onvoiceschanged=fillVoices;
 rt.oninput=function(){$('rv').textContent=(+rt.value).toFixed(1)};
 pt.oninput=function(){$('pv').textContent=(+pt.value).toFixed(1)};
 function esc(x){return x.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
@@ -101,7 +132,7 @@ while(k<ws.length){var d=est.D*ws[k].f;if(acc+d>=skip)break;acc+=d;k++;}
 step(k);
 }
 function chunks(txt,base){
-var out=[],rx=/[^.!?\n\u06D4\u061F]+[.!?\u06D4\u061F]*/g,m;
+var out=[],rx=/[^.!?\n\u06D4\u061F\u0964\u3002\uFF01\uFF1F]+[.!?\u06D4\u061F\u0964\u3002\uFF01\uFF1F]*/g,m;
 rx.lastIndex=base;
 while((m=rx.exec(txt))){
 var st=m.index,e=st+m[0].length;
@@ -116,14 +147,14 @@ var txt=orig_.replace(/[#*_`>~|]/g,' '),cs=chunks(txt,base);
 if(!cs.length){show(false);return;}
 paras=[];var rx=/[^\n]+/g,mm;
 while((mm=rx.exec(orig_))){if(mm[0].trim())paras.push({s:mm.index,e:mm.index+mm[0].length});}
-V.dir=/[\u0600-\u06FF]/.test(orig_)?'rtl':'ltr';build();render(base,0);show(true);
-var rate=+rt.value,pitch=+pt.value,vs=S.getVoices(),ar=/[\u0600-\u06FF]/.test(txt),v=null,lang;
+V.dir=/[\u0590-\u08FF]/.test(orig_)?'rtl':'ltr';build();render(base,0);show(true);
+var rate=+rt.value,pitch=+pt.value,vs=S.getVoices(),ar=/[\u0600-\u06FF]/.test(txt),v=null,lang,dl=tgt?tgt.sc:(ar?'ur-PK':'en-US');
 if(mode==='sel'&&vs[sel.value]){v=vs[sel.value];lang=v.lang;}
 else if(mode==='auto'){
-var pre=ar?/^ur/i:/^en/i;
+var pre=tgt?preOf(tgt):(ar?/^ur/i:/^en/i);
 v=vs.filter(function(x){return pre.test(x.lang)&&x.localService!==false})[0]||vs.filter(function(x){return pre.test(x.lang)})[0]||null;
-lang=v?v.lang:(ar?'ur-PK':'en-US');
-}else lang=ar?'ur-PK':'en-US';
+lang=v?v.lang:dl;
+}else lang=dl;
 setTimeout(function(){
 if(my!==sid)return;
 var qd={};
@@ -168,40 +199,55 @@ mk(0);mk(1);
 },120);
 }
 var cache={},busy=false;
-function piece(q,sl,tl){
-return fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl='+sl+'&tl='+tl+'&dt=t&q='+encodeURIComponent(q))
+function piece(q,tl){
+return fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl='+tl+'&dt=t&q='+encodeURIComponent(q))
 .then(function(r){return r.json()}).then(function(j){return j[0].map(function(x){return x[0]}).join('')})
-.catch(function(){return fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair='+sl+'|'+tl)
+.catch(function(){return fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair=Autodetect|'+tl)
 .then(function(r){return r.json()}).then(function(j){if(j.responseStatus!=200)throw 0;return j.responseData.translatedText})});
 }
-function tline(line,sl,tl){
-var ps=[],cur_='',ss=line.match(/[^.!?\u06D4\u061F]+[.!?\u06D4\u061F]*/g)||[line];
+function tline(line,tl){
+var ps=[],cur_='',ss=line.match(/[^.!?\n\u06D4\u061F\u0964\u3002\uFF01\uFF1F]+[.!?\u06D4\u061F\u0964\u3002\uFF01\uFF1F]*/g)||[line];
 ss.forEach(function(x){if((cur_+x).length>400&&cur_){ps.push(cur_);cur_='';}cur_+=x;});
 if(cur_.trim())ps.push(cur_);
-return ps.reduce(function(p,q){return p.then(function(acc){return piece(q,sl,tl).then(function(t){return acc+(acc?' ':'')+t})})},Promise.resolve(''));
+return ps.reduce(function(p,q){return p.then(function(acc){return piece(q,tl).then(function(t){return acc+(acc?' ':'')+t})})},Promise.resolve(''));
 }
-function tr(text,sl,tl){
-var ls=text.split('\n');
-return ls.reduce(function(p,l){return p.then(function(acc){
+function tr(text,tl){
+var ls_=text.split('\n');
+return ls_.reduce(function(p,l){return p.then(function(acc){
 if(!l.trim()){acc.push('');return acc;}
-return tline(l.trim(),sl,tl).then(function(t){acc.push(t);return acc;});
+return tline(l.trim(),tl).then(function(t){acc.push(t);return acc;});
 });},Promise.resolve([])).then(function(a){return a.join('\n')});
 }
 function mode(){return sel.value==='-2'?'auto':(sel.value==='-1'?'def':'sel');}
+function teach(o,L){
+var lang=L?L.n:'the same language as the text',ac=new AbortController(),t=setTimeout(function(){ac.abort()},60000);
+var sys='You are a kind, clear teacher giving a spoken lecture to a student. Explain the given text in '+lang+'. First explain the main idea simply, then go through each point with extra details, reasons, simple examples and things to remember, then finish with a short summary. Write plain spoken paragraphs only: no markdown, no headings, no bullet symbols, no emojis.';
+return fetch('https://text.pollinations.ai/',{method:'POST',headers:{'Content-Type':'application/json'},signal:ac.signal,
+body:JSON.stringify({model:'openai',messages:[{role:'system',content:sys},{role:'user',content:o.slice(0,6000)}]})})
+.then(function(r){clearTimeout(t);if(!r.ok)throw 0;return r.text()})
+.then(function(x){x=x.replace(/[#*_`>~|]/g,' ').replace(/\n{3,}/g,'\n\n').trim();if(!x)throw 0;return x;});
+}
 $('play').onclick=function(){
 if(paused){S.resume();paused=false;if(!bc&&est.w.length)step(est.k);return;}
 var o=T.value.trim();if(!o||busy)return;
-var clean=o.replace(/[#*_`>~|]/g,' '),vs=S.getVoices(),vl=(mode()==='sel'&&vs[sel.value])?vs[sel.value].lang:'',
-ar=/[\u0600-\u06FF]/.test(o),lat=/[A-Za-z]/.test(o),need=null;
-if(/^ur/i.test(vl)&&!ar&&lat)need=['en','ur'];
-else if(/^en/i.test(vl)&&ar)need=['ur','en'];
-if(!need){orig_=o;run(mode(),0,0);return;}
-var key=need.join('')+'|'+o;
-if(cache[key]){orig_=cache[key];run(mode(),0,0);return;}
-busy=true;msg.textContent='Translating to '+(need[1]==='ur'?'Urdu':'English')+'...';
-tr(clean,need[0],need[1]).then(function(t){
-busy=false;cache[key]=t;msg.textContent='';orig_=t;run(mode(),0,0);
-}).catch(function(){busy=false;msg.textContent='Translation needs an internet connection. Check and try again.';});
+tgt=curLang();
+var tc=$('tc').checked,key=(tc?'T|':'')+(tgt?tgt.tl:'')+'|'+o;
+function go(t){
+orig_=t;
+if(tgt){
+var vs=S.getVoices(),pre=preOf(tgt);
+if(vs.length&&!vs.some(function(x){return pre.test(x.lang)}))msg.textContent='No '+tgt.n+' voice installed. Trying device default...';
+}
+run(mode(),0,0);
+}
+if(!tc&&!tgt){orig_=o;run(mode(),0,0);return;}
+if(cache[key]){go(cache[key]);return;}
+busy=true;
+var job;
+if(tc){msg.textContent='Teacher is preparing the lecture...';job=teach(o,tgt);}
+else{msg.textContent='Translating to '+tgt.n+'...';job=tr(o.replace(/[#*_`>~|]/g,' '),tgt.tl);}
+job.then(function(t){busy=false;cache[key]=t;go(t);})
+.catch(function(){busy=false;msg.textContent=tc?'Teacher could not respond. Check your internet and try again.':'Translation needs an internet connection. Check and try again.';});
 };
 $('pause').onclick=function(){
 if(S.speaking&&!paused){S.pause();paused=true;pf=true;clr();}
