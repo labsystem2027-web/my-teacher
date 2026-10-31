@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Text Reader</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f766e">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mut:#6a7280;--ac:#0f766e;--bd:#d9dde3;--hl:#fcd34d;--hp:#e3f3f0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1317;--card:#181d23;--tx:#e8ebef;--mut:#98a1ad;--ac:#2dd4bf;--bd:#2b323b;--hl:#fbbf24;--hp:#12332f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:16px}
+.w{max-width:720px;margin:0 auto}
+h1{font-size:20px;margin:0 0 12px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+textarea,#view{width:100%;min-height:200px;font:17px/1.7 system-ui,sans-serif;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:10px;resize:vertical}
+#view{display:none;overflow:auto;max-height:50vh}
+#view .p{white-space:pre-wrap;padding:6px 8px;border-radius:6px;margin:0 0 6px;cursor:pointer}#view .p.a{background:var(--hp);box-shadow:inset 3px 0 0 var(--ac)}
+mark{background:var(--hl);color:#111;font-weight:700;border-radius:4px;padding:1px 3px;box-shadow:0 0 0 2px var(--hl)}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+select,input[type=range]{width:100%}
+select{padding:8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:15px}
+.r{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{flex:1;min-width:90px;padding:12px;border:0;border-radius:8px;font-size:15px;font-weight:600;background:var(--ac);color:#fff;cursor:pointer}
+button.s{background:var(--bd);color:var(--tx)}
+.m{font-size:12px;color:var(--mut);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>Text Reader</h1>
+<div class="c">
+<textarea id="t" placeholder="Paste or type text here..."></textarea>
+<div id="view"></div>
+<label>Voice</label>
+<select id="v"></select>
+<label>Speed: <span id="rv">1.0</span>x</label>
+<input type="range" id="rt" min="0.5" max="2" step="0.1" value="1">
+<label>Pitch: <span id="pv">1.0</span></label>
+<input type="range" id="pt" min="0.5" max="2" step="0.1" value="1">
+<div class="r">
+<button id="play">Play</button>
+<button id="pause" class="s">Pause</button>
+<button id="stop" class="s">Stop</button>
+</div>
+<div class="m" id="msg"></div>
+</div>
+</div>
+<script>
+(function(){
+var S=window.speechSynthesis,$=function(i){return document.getElementById(i)},
+T=$('t'),V=$('view'),sel=$('v'),rt=$('rt'),pt=$('pt'),msg=$('msg');
+if(!S){msg.textContent='Text-to-speech is not supported in this browser.';return;}
+var paras=[],orig_='',tm=null,sid=0,paused=false,pf=false,mpc1=55,cal=false,cur=null,bc=0,t0=0,est={k:0,w:[],D:0};
+function load(){
+var vs=S.getVoices();
+sel.innerHTML='<option value="-2">Auto (match text language)</option><option value="-1">Device default</option>';
+vs.forEach(function(x,i){var o=document.createElement('option');o.value=i;o.textContent=x.name+' ('+x.lang+')';sel.appendChild(o);});
+}
+load();S.onvoiceschanged=load;
+rt.oninput=function(){$('rv').textContent=(+rt.value).toFixed(1)};
+pt.oninput=function(){$('pv').textContent=(+pt.value).toFixed(1)};
+function esc(x){return x.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+function show(on){V.style.display=on?'block':'none';T.style.display=on?'none':'block';}
+function clr(){if(tm){clearTimeout(tm);tm=null;}}
+var pe=[],pa=-1;
+function build(){
+V.innerHTML='';pe=[];pa=-1;
+paras.forEach(function(q){var d=document.createElement('div');d.className='p';d.setAttribute('data-s',q.s);d.textContent=orig_.slice(q.s,q.e);V.appendChild(d);pe.push(d);});
+}
+function render(pos,len){
+var n=-1,j;
+for(j=0;j<paras.length;j++){if(pos>=paras[j].s&&pos<paras[j].e){n=j;break;}}
+if(n<0){for(j=0;j<paras.length;j++){if(paras[j].s>=pos){n=j;break;}}}
+if(n<0)return;
+if(pa>=0&&pa!==n){pe[pa].className='p';pe[pa].textContent=orig_.slice(paras[pa].s,paras[pa].e);}
+pa=n;
+var q=paras[n],t=orig_.slice(q.s,q.e),a=Math.max(0,pos-q.s),el=pe[n];
+el.className='p a';
+el.innerHTML=esc(t.slice(0,a))+(len>0?'<mark>'+esc(t.substr(a,len))+'</mark>':'')+esc(t.slice(a+len));
+var k=el.querySelector('mark')||el;
+if(k.scrollIntoView)k.scrollIntoView({block:'nearest'});
+}
+function step(k){
+if(k>=est.w.length)return;
+est.k=k;var w=est.w[k];render(w.i,w.l);
+tm=setTimeout(function(){step(k+1)},est.D*w.f);
+}
+function startEst(c,skip,rate){
+var rx=/\S+/g,m,seg=orig_.slice(c.s,c.e),ws=[],W=0;
+while((m=rx.exec(seg))){var t=m[0],wt=t.length+1+(/[.!?\u06D4\u061F]$/.test(t)?5:(/[,;:\u060C]$/.test(t)?2:0));
+ws.push({i:c.s+m.index,l:t.length,wt:wt});W+=wt;}
+if(!ws.length)return;
+ws.forEach(function(w){w.f=w.wt/W});
+est={k:0,w:ws,D:(mpc1/rate)*(c.e-c.s)};
+var acc=0,k=0;
+while(k<ws.length){var d=est.D*ws[k].f;if(acc+d>=skip)break;acc+=d;k++;}
+step(k);
+}
+function chunks(txt,base){
+var out=[],rx=/[^.!?\n\u06D4\u061F]+[.!?\u06D4\u061F]*/g,m;
+rx.lastIndex=base;
+while((m=rx.exec(txt))){
+var st=m.index,e=st+m[0].length;
+while(e-st>180){var cut=txt.lastIndexOf(' ',st+150);if(cut<=st)cut=st+150;out.push({s:st,e:cut});st=cut;}
+if(txt.slice(st,e).trim())out.push({s:st,e:e});
+}
+return out;
+}
+function run(mode,tries,base){
+var my=++sid;clr();S.cancel();paused=false;
+var txt=orig_.replace(/[#*_`>~|]/g,' '),cs=chunks(txt,base);
+if(!cs.length){show(false);return;}
+paras=[];var rx=/[^\n]+/g,mm;
+while((mm=rx.exec(orig_))){if(mm[0].trim())paras.push({s:mm.index,e:mm.index+mm[0].length});}
+V.dir=/[\u0600-\u06FF]/.test(orig_)?'rtl':'ltr';build();render(base,0);show(true);
+var rate=+rt.value,pitch=+pt.value,vs=S.getVoices(),ar=/[\u0600-\u06FF]/.test(txt),v=null,lang;
+if(mode==='sel'&&vs[sel.value]){v=vs[sel.value];lang=v.lang;}
+else if(mode==='auto'){
+var pre=ar?/^ur/i:/^en/i;
+v=vs.filter(function(x){return pre.test(x.lang)&&x.localService!==false})[0]||vs.filter(function(x){return pre.test(x.lang)})[0]||null;
+lang=v?v.lang:(ar?'ur-PK':'en-US');
+}else lang=ar?'ur-PK':'en-US';
+setTimeout(function(){
+if(my!==sid)return;
+var qd={};
+function mk(ix){
+if(ix>=cs.length||qd[ix])return;qd[ix]=1;var c=cs[ix];
+var u=new SpeechSynthesisUtterance(txt.slice(c.s,c.e));
+if(v)u.voice=v;
+u.lang=lang;u.rate=rate;u.pitch=pitch;
+u.onstart=function(){
+if(my!==sid)return;
+mk(ix+2);
+clr();cur=c;bc=0;pf=false;est={k:0,w:[],D:0};t0=Date.now();msg.textContent='Reading...';
+tm=setTimeout(function(){if(my===sid&&cur===c&&!bc)startEst(c,Date.now()-t0,rate);},350);
+};
+u.onboundary=function(e){
+if(my!==sid)return;
+if(e.name&&e.name!=='word')return;
+bc++;clr();
+var i=e.charIndex+c.s,m=/\S+/.exec(orig_.slice(i));
+render(i,m?m[0].length:1);
+};
+u.onend=function(){
+if(my!==sid)return;
+clr();
+var len=c.e-c.s,a=Date.now()-t0;
+if(!bc&&!pf&&len>15&&a>200){var obs=a/len*rate;mpc1=cal?0.5*mpc1+0.5*obs:obs;cal=true;}
+if(ix===cs.length-1){show(false);msg.textContent='';}
+else{var nx=cs[ix+1],m2=/\S+/.exec(orig_.slice(nx.s));render(nx.s,m2?m2[0].length:1);}
+};
+u.onerror=function(e){
+if(my!==sid)return;
+if(e.error==='interrupted'||e.error==='canceled')return;
+clr();
+var nx=mode==='sel'?'auto':(mode==='auto'?'def':'');
+if(nx&&tries<2){S.cancel();setTimeout(function(){run(nx,tries+1,c.s)},150);return;}
+sid++;show(false);
+msg.textContent='Error: '+e.error+'. Install voice data in phone Settings > Text-to-speech.';
+};
+S.speak(u);
+}
+mk(0);mk(1);
+},120);
+}
+var cache={},busy=false;
+function piece(q,sl,tl){
+return fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl='+sl+'&tl='+tl+'&dt=t&q='+encodeURIComponent(q))
+.then(function(r){return r.json()}).then(function(j){return j[0].map(function(x){return x[0]}).join('')})
+.catch(function(){return fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair='+sl+'|'+tl)
+.then(function(r){return r.json()}).then(function(j){if(j.responseStatus!=200)throw 0;return j.responseData.translatedText})});
+}
+function tline(line,sl,tl){
+var ps=[],cur_='',ss=line.match(/[^.!?\u06D4\u061F]+[.!?\u06D4\u061F]*/g)||[line];
+ss.forEach(function(x){if((cur_+x).length>400&&cur_){ps.push(cur_);cur_='';}cur_+=x;});
+if(cur_.trim())ps.push(cur_);
+return ps.reduce(function(p,q){return p.then(function(acc){return piece(q,sl,tl).then(function(t){return acc+(acc?' ':'')+t})})},Promise.resolve(''));
+}
+function tr(text,sl,tl){
+var ls=text.split('\n');
+return ls.reduce(function(p,l){return p.then(function(acc){
+if(!l.trim()){acc.push('');return acc;}
+return tline(l.trim(),sl,tl).then(function(t){acc.push(t);return acc;});
+});},Promise.resolve([])).then(function(a){return a.join('\n')});
+}
+function mode(){return sel.value==='-2'?'auto':(sel.value==='-1'?'def':'sel');}
+$('play').onclick=function(){
+if(paused){S.resume();paused=false;if(!bc&&est.w.length)step(est.k);return;}
+var o=T.value.trim();if(!o||busy)return;
+var clean=o.replace(/[#*_`>~|]/g,' '),vs=S.getVoices(),vl=(mode()==='sel'&&vs[sel.value])?vs[sel.value].lang:'',
+ar=/[\u0600-\u06FF]/.test(o),lat=/[A-Za-z]/.test(o),need=null;
+if(/^ur/i.test(vl)&&!ar&&lat)need=['en','ur'];
+else if(/^en/i.test(vl)&&ar)need=['ur','en'];
+if(!need){orig_=o;run(mode(),0,0);return;}
+var key=need.join('')+'|'+o;
+if(cache[key]){orig_=cache[key];run(mode(),0,0);return;}
+busy=true;msg.textContent='Translating to '+(need[1]==='ur'?'Urdu':'English')+'...';
+tr(clean,need[0],need[1]).then(function(t){
+busy=false;cache[key]=t;msg.textContent='';orig_=t;run(mode(),0,0);
+}).catch(function(){busy=false;msg.textContent='Translation needs an internet connection. Check and try again.';});
+};
+$('pause').onclick=function(){
+if(S.speaking&&!paused){S.pause();paused=true;pf=true;clr();}
+};
+function stop(){sid++;clr();S.cancel();paused=false;show(false);msg.textContent='';}
+$('stop').onclick=stop;
+V.onclick=function(e){
+var d=e.target.closest?e.target.closest('.p'):null;
+if(!d)return;
+run(mode(),0,+d.getAttribute('data-s'));
+};
+})();
+</script>
+<script>if("serviceWorker"in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}</script>
+</body>
+</html>
