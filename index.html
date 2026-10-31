@@ -230,7 +230,7 @@ paras=[];var rx=/[^\n]+/g,mm;
 while((mm=rx.exec(orig_))){if(mm[0].trim())paras.push({s:mm.index,e:mm.index+mm[0].length});}
 V.dir=/[\u0590-\u08FF]/.test(orig_)?'rtl':'ltr';build();render(base,0);show(true);
 var vs0=S.getVoices(),hv=!tgt||!vs0.length||vs0.some(function(x){return preOf(tgt).test(x.lang)});
-if(mode==='online'||(mode==='auto'&&!hv)){startOnline(cs,my,+rt.value,txt);return;}
+if(mode==='online'){startOnline(cs,my,+rt.value,txt);return;}
 var rate=+rt.value,pitch=+pt.value,vs=S.getVoices(),ar=/[\u0600-\u06FF]/.test(txt),v=null,lang,dl=tgt?tgt.sc:(ar?'ur-PK':'en-US');
 if(mode==='sel'&&vs[sel.value]){v=vs[sel.value];lang=v.lang;}
 else if(mode==='auto'){
@@ -240,7 +240,7 @@ lang=v?v.lang:dl;
 }else lang=dl;
 setTimeout(function(){
 if(my!==sid)return;
-var qd={};
+var qd={},started=false;
 function mk(ix){
 if(ix>=cs.length||qd[ix])return;qd[ix]=1;var c=cs[ix];
 var u=new SpeechSynthesisUtterance(txt.slice(c.s,c.e));
@@ -248,7 +248,7 @@ if(v)u.voice=v;
 u.lang=lang;u.rate=rate;u.pitch=pitch;
 u.onstart=function(){
 if(my!==sid)return;
-mk(ix+2);
+started=true;mk(ix+2);
 clr();cur=c;bc=0;pf=false;est={k:0,w:[],D:0};t0=Date.now();msg.textContent='\uD83D\uDD0A Reading...';
 tm=setTimeout(function(){if(my===sid&&cur===c&&!bc)startEst(c,Date.now()-t0,rate);},350);
 };
@@ -280,6 +280,7 @@ msg.textContent='\u2139 Voice could not start ('+e.error+'). Pick "Online voice"
 S.speak(u);
 }
 mk(0);mk(1);
+if(tgt)setTimeout(function(){if(my===sid&&!started&&!paused)run('online',0,base);},5000);
 },120);
 }
 var cache={},busy=false;
