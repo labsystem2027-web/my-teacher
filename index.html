@@ -31,13 +31,15 @@ input[type=range]{width:100%;height:1.6rem}
 .r{display:flex;gap:.5rem;margin-top:.9rem}
 button{flex:1;min-width:0;padding:.9rem .5rem;border:0;border-radius:.6rem;font-size:1.05rem;font-weight:600;background:var(--ac);color:#fff;cursor:pointer}
 button.s{background:var(--bd);color:var(--tx)}
-.m{font-size:.85rem;color:var(--mut);margin-top:.6rem;min-height:1.2rem}
+.m{font-size:.95rem;color:var(--tx);background:var(--hp);border-radius:.5rem;padding:.55rem .7rem;margin-bottom:.6rem}
+.m:empty{display:none}
 </style>
 </head>
 <body>
 <div class="w">
 <h1>Text Reader</h1>
 <div class="c">
+<div class="m" id="msg"></div>
 <textarea id="t" placeholder="Paste or type text here..."></textarea>
 <div id="view"></div>
 <label>Read in (language)</label>
@@ -55,7 +57,6 @@ button.s{background:var(--bd);color:var(--tx)}
 <button id="pause" class="s">Pause</button>
 <button id="stop" class="s">Stop</button>
 </div>
-<div class="m" id="msg"></div>
 </div>
 </div>
 <script>(function(){function f(){var iw=window.innerWidth,sw=screen.width,k=(sw>0&&sw<700&&iw>sw*1.25)?iw/sw:1;document.documentElement.style.fontSize=(16*k)+'px';}f();window.addEventListener('resize',f);window.addEventListener('orientationchange',function(){setTimeout(f,200)});})();</script>
@@ -101,7 +102,14 @@ pt.oninput=function(){$('pv').textContent=(+pt.value).toFixed(1)};
 function esc(x){return x.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
 function show(on){V.style.display=on?'block':'none';T.style.display=on?'none':'block';}
 function clr(){if(tm){clearTimeout(tm);tm=null;}}
-var pe=[],pa=-1;
+var pe=[],pa=-1,ua=0;
+function keep(k){
+if(Date.now()<ua)return;
+var kr=k.getBoundingClientRect(),vr=V.getBoundingClientRect();
+if(kr.top<vr.top+12)V.scrollTop-=vr.top+12-kr.top;
+else if(kr.bottom>vr.bottom-12)V.scrollTop+=kr.bottom-(vr.bottom-12);
+}
+['touchstart','wheel','mousedown'].forEach(function(ev){V.addEventListener(ev,function(){ua=Date.now()+6000;},{passive:true});});
 function build(){
 V.innerHTML='';pe=[];pa=-1;
 paras.forEach(function(q){var d=document.createElement('div');d.className='p';d.setAttribute('data-s',q.s);d.textContent=orig_.slice(q.s,q.e);V.appendChild(d);pe.push(d);});
@@ -116,8 +124,7 @@ pa=n;
 var q=paras[n],t=orig_.slice(q.s,q.e),a=Math.max(0,pos-q.s),el=pe[n];
 el.className='p a';
 el.innerHTML=esc(t.slice(0,a))+(len>0?'<mark>'+esc(t.substr(a,len))+'</mark>':'')+esc(t.slice(a+len));
-var k=el.querySelector('mark')||el;
-if(k.scrollIntoView)k.scrollIntoView({block:'nearest'});
+keep(el.querySelector('mark')||el);
 }
 function step(k){
 if(k>=est.w.length)return;
@@ -170,7 +177,7 @@ u.lang=lang;u.rate=rate;u.pitch=pitch;
 u.onstart=function(){
 if(my!==sid)return;
 mk(ix+2);
-clr();cur=c;bc=0;pf=false;est={k:0,w:[],D:0};t0=Date.now();msg.textContent='Reading...';
+clr();cur=c;bc=0;pf=false;est={k:0,w:[],D:0};t0=Date.now();msg.textContent='\uD83D\uDD0A Reading...';
 tm=setTimeout(function(){if(my===sid&&cur===c&&!bc)startEst(c,Date.now()-t0,rate);},350);
 };
 u.onboundary=function(e){
@@ -185,7 +192,7 @@ if(my!==sid)return;
 clr();
 var len=c.e-c.s,a=Date.now()-t0;
 if(!bc&&!pf&&len>15&&a>200){var obs=a/len*rate;mpc1=cal?0.5*mpc1+0.5*obs:obs;cal=true;}
-if(ix===cs.length-1){show(false);msg.textContent='';}
+if(ix===cs.length-1){if(pa>=0){pe[pa].className='p';pe[pa].textContent=orig_.slice(paras[pa].s,paras[pa].e);pa=-1;}msg.textContent='Tap any paragraph to read from there.';}
 else{var nx=cs[ix+1],m2=/\S+/.exec(orig_.slice(nx.s));render(nx.s,m2?m2[0].length:1);}
 };
 u.onerror=function(e){
@@ -194,8 +201,8 @@ if(e.error==='interrupted'||e.error==='canceled')return;
 clr();
 var nx=mode==='sel'?'auto':(mode==='auto'?'def':'');
 if(nx&&tries<2){S.cancel();setTimeout(function(){run(nx,tries+1,c.s)},150);return;}
-sid++;show(false);
-msg.textContent='Error: '+e.error+'. Install voice data in phone Settings > Text-to-speech.';
+sid++;
+msg.textContent='\u26A0 Error: '+e.error+'. Install voice data in phone Settings > Text-to-speech.';
 };
 S.speak(u);
 }
@@ -203,24 +210,33 @@ mk(0);mk(1);
 },120);
 }
 var cache={},busy=false;
+function ft(u,ms){
+var ac=new AbortController(),t=setTimeout(function(){ac.abort()},ms);
+return fetch(u,{signal:ac.signal}).then(function(r){clearTimeout(t);return r},function(e){clearTimeout(t);throw e});
+}
 function piece(q,tl){
-return fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl='+tl+'&dt=t&q='+encodeURIComponent(q))
+return ft('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl='+tl+'&dt=t&q='+encodeURIComponent(q),15000)
 .then(function(r){return r.json()}).then(function(j){return j[0].map(function(x){return x[0]}).join('')})
-.catch(function(){return fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair=Autodetect|'+tl)
+.catch(function(){return ft('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair=Autodetect|'+tl,15000)
 .then(function(r){return r.json()}).then(function(j){if(j.responseStatus!=200)throw 0;return j.responseData.translatedText})});
 }
-function tline(line,tl){
-var ps=[],cur_='',ss=line.match(/[^.!?\n\u06D4\u061F\u0964\u3002\uFF01\uFF1F]+[.!?\u06D4\u061F\u0964\u3002\uFF01\uFF1F]*/g)||[line];
-ss.forEach(function(x){if((cur_+x).length>400&&cur_){ps.push(cur_);cur_='';}cur_+=x;});
-if(cur_.trim())ps.push(cur_);
-return ps.reduce(function(p,q){return p.then(function(acc){return piece(q,tl).then(function(t){return acc+(acc?' ':'')+t})})},Promise.resolve(''));
+function pieces(line){
+var ps=[],c_='',ss=line.match(/[^.!?\n\u06D4\u061F\u0964\u3002\uFF01\uFF1F]+[.!?\u06D4\u061F\u0964\u3002\uFF01\uFF1F]*/g)||[line];
+ss.forEach(function(x){if((c_+x).length>400&&c_){ps.push(c_);c_='';}c_+=x;});
+if(c_.trim())ps.push(c_);
+return ps;
 }
 function tr(text,tl){
-var ls_=text.split('\n');
-return ls_.reduce(function(p,l){return p.then(function(acc){
-if(!l.trim()){acc.push('');return acc;}
-return tline(l.trim(),tl).then(function(t){acc.push(t);return acc;});
-});},Promise.resolve([])).then(function(a){return a.join('\n')});
+var L=text.split('\n'),tasks=[],res=L.map(function(){return []});
+L.forEach(function(l,li){if(!l.trim())return;pieces(l.trim()).forEach(function(q,pi){tasks.push({li:li,pi:pi,q:q});});});
+var i=0;
+function worker(){
+if(i>=tasks.length)return Promise.resolve();
+var t=tasks[i++];
+return piece(t.q,tl).then(function(x){res[t.li][t.pi]=x;}).then(worker);
+}
+var ws=[];for(var k=0;k<4;k++)ws.push(worker());
+return Promise.all(ws).then(function(){return res.map(function(a){return a.join(' ')}).join('\n')});
 }
 function mode(){return sel.value==='-2'?'auto':(sel.value==='-1'?'def':'sel');}
 function teach(o,L){
@@ -234,6 +250,7 @@ body:JSON.stringify({model:'openai',messages:[{role:'system',content:sys},{role:
 $('play').onclick=function(){
 if(paused){S.resume();paused=false;if(!bc&&est.w.length)step(est.k);return;}
 var o=T.value.trim();if(!o||busy)return;
+window.scrollTo(0,0);
 tgt=curLang();
 var tc=$('tc').checked,key=(tc?'T|':'')+(tgt?tgt.tl:'')+'|'+o;
 function go(t){
@@ -242,16 +259,16 @@ if(tgt){
 var vs=S.getVoices(),pre=preOf(tgt);
 if(vs.length&&!vs.some(function(x){return pre.test(x.lang)}))msg.textContent='No '+tgt.n+' voice installed. Trying device default...';
 }
-run(mode(),0,0);
+try{run(mode(),0,0);}catch(e){busy=false;msg.textContent='\u26A0 '+(e&&e.message?e.message:'Something went wrong');}
 }
 if(!tc&&!tgt){orig_=o;run(mode(),0,0);return;}
 if(cache[key]){go(cache[key]);return;}
 busy=true;
 var job;
-if(tc){msg.textContent='Teacher is preparing the lecture...';job=teach(o,tgt);}
-else{msg.textContent='Translating to '+tgt.n+'...';job=tr(o.replace(/[#*_`>~|]/g,' '),tgt.tl);}
+if(tc){msg.textContent='\u23F3 Teacher is preparing the lecture...';job=teach(o,tgt);}
+else{msg.textContent='\u23F3 Translating to '+tgt.n+'...';job=tr(o.replace(/[#*_`>~|]/g,' '),tgt.tl);}
 job.then(function(t){busy=false;cache[key]=t;go(t);})
-.catch(function(){busy=false;msg.textContent=tc?'Teacher could not respond. Check your internet and try again.':'Translation needs an internet connection. Check and try again.';});
+.catch(function(){busy=false;msg.textContent=tc?'\u26A0 Teacher could not respond. Check your internet and try again.':'\u26A0 Translation failed. Check your internet and try again.';});
 };
 $('pause').onclick=function(){
 if(S.speaking&&!paused){S.pause();paused=true;pf=true;clr();}
@@ -261,7 +278,7 @@ $('stop').onclick=stop;
 V.onclick=function(e){
 var d=e.target.closest?e.target.closest('.p'):null;
 if(!d)return;
-run(mode(),0,+d.getAttribute('data-s'));
+ua=0;run(mode(),0,+d.getAttribute('data-s'));
 };
 })();
 </script>
