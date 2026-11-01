@@ -71,6 +71,8 @@ button{flex:1;min-width:0;padding:.9rem .5rem;border:0;border-radius:.6rem;font-
 button.s{background:var(--bd);color:var(--tx)}
 .m{font-size:.95rem;color:var(--tx);background:var(--hp);border-radius:.5rem;padding:.55rem .7rem;margin-bottom:.6rem}
 .m:empty{display:none}
+#qzb textarea{display:block;width:100%;flex:none;min-height:5.5rem;font:1rem/1.5 system-ui,sans-serif;resize:vertical;margin:.3rem 0 1rem;padding:.65rem}
+#qzb input[type=text]{margin-bottom:.5rem}
 </style>
 </head>
 <body>
@@ -78,7 +80,7 @@ button.s{background:var(--bd);color:var(--tx)}
 <h1>Text Reader</h1>
 <div class="c">
 <div class="m" id="msg"></div>
-<div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button></div>
+<div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button><button class="s" id="bask">💬 Ask</button><button class="s" id="btst">📝 Test</button></div>
 <input type="file" id="pdf" accept="application/pdf,.pdf" hidden>
 <div id="tw"><textarea id="t" placeholder="Paste or type text here..."></textarea><div class="tbtn"><button id="bpdf" type="button" aria-label="PDF" title="Add text from a PDF">📄</button><button id="bmc" type="button" aria-label="Mic: speak to type" title="Speak to type">🎤</button></div></div>
 <div id="view"></div>
@@ -598,6 +600,136 @@ qb.appendChild(fb);qb.appendChild(nx);
 draw();
 }
 $('bqz').onclick=function(){stop();qOpen('quiz','Quiz');qStart();};
+/* Ask (Q&A) + Test */
+function jparse(x,o,c){var a=x.indexOf(o),b=x.lastIndexOf(c);return JSON.parse(x.slice(a,b+1));}
+function noSrc(){qb.appendChild(el('div','qf','Your text box is empty. Tap Back, paste or write some text, then open this page again.'));}
+function qAsk(){
+qb.innerHTML='';qb.dir='auto';qb.scrollTop=0;
+var src=T.value.trim();
+qb.appendChild(el('h2','','Ask a question about your text'));
+if(!src){noSrc();return;}
+qb.appendChild(el('div','qf','Text: '+src.slice(0,140).replace(/\s+/g,' ')+(src.length>140?'...':'')));
+var inp=document.createElement('input');inp.type='text';inp.placeholder='Type your question...';
+var go=el('button','','Ask'),st=el('div','m',''),lst=el('div','');
+st.style.marginTop='.8rem';
+function ask(){
+var q=inp.value.trim();
+if(!q||busy)return;
+busy=true;go.disabled=true;tgt=curLang();
+st.textContent='\u23F3 Teacher is thinking...';
+var lang=tgt?tgt.n:'the same language as the question';
+aiText("You are a kind, clear teacher. A student asks a question about the study text. Answer in "+lang+". Use the text first. If the text does not contain the answer, say so in one short sentence and then give a brief helpful answer from general knowledge. Keep it under 150 words. Plain text only: no markdown, no emojis.",'STUDY TEXT:\n'+src.slice(0,6000)+'\n\nQUESTION: '+q,90000)
+.then(function(x){
+x=x.replace(/[#*_`>~|]/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+if(!x)throw 0;
+var d=el('div','rv');d.dir='auto';
+d.appendChild(el('b','',q));
+var a=el('div','',x);a.style.whiteSpace='pre-wrap';a.style.marginTop='.4rem';d.appendChild(a);
+lst.insertBefore(d,lst.firstChild);
+inp.value='';st.textContent='';busy=false;go.disabled=false;
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not get an answer. Check your internet and try again.';});
+}
+go.onclick=ask;
+inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();ask();}};
+qb.appendChild(inp);qb.appendChild(go);qb.appendChild(st);qb.appendChild(lst);
+}
+var tmr=null;
+function qTest(){
+if(tmr){clearInterval(tmr);tmr=null;}
+qb.innerHTML='';qb.dir='auto';qb.scrollTop=0;
+var src=T.value.trim();
+qb.appendChild(el('h2','','Take a written test'));
+if(!src){noSrc();return;}
+qb.appendChild(el('div','qf','Text: '+src.slice(0,140).replace(/\s+/g,' ')+(src.length>140?'...':'')));
+qb.appendChild(el('label','','How many questions? (2 marks each)'));
+var nS=selBox([['5','5 questions'],['10','10 questions']],'5');qb.appendChild(nS);
+qb.appendChild(el('label','','Level'));
+var lS=selBox([['easy','Easy'],['medium','Medium'],['hard','Hard']],'medium');qb.appendChild(lS);
+qb.appendChild(el('label','','Time limit'));
+var tS=selBox([['0','No timer'],['10','10 minutes'],['20','20 minutes'],['30','30 minutes']],'0');qb.appendChild(tS);
+var st=el('div','m',''),go=el('button','','Start test');
+st.style.marginTop='.8rem';
+go.onclick=function(){
+if(busy)return;
+busy=true;tgt=curLang();go.disabled=true;
+st.textContent='\u23F3 Teacher is preparing the test...';
+var lang=tgt?tgt.n:'the same language as the text';
+aiText('You are a teacher setting a written exam. Create exactly '+nS.value+' short-answer questions of '+lS.value+' difficulty from the text. Each question must be answerable in 1 to 3 sentences. Write in '+lang+'. Return ONLY a JSON array with no markdown, like [{"q":"question","a":"model answer in 1 or 2 sentences"}].',src.slice(0,5000),120000)
+.then(function(x){
+var qs=jparse(x,'[',']').filter(function(q){return q&&typeof q.q==='string'&&typeof q.a==='string';});
+if(!qs.length)throw 0;
+busy=false;runTest(qs,+tS.value);
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the test. Check your internet and try again.';});
+};
+qb.appendChild(go);qb.appendChild(st);
+}
+function runTest(qs,mins){
+var M=2,TOT=qs.length*M,tas=[],done=false,left=mins*60;
+qb.dir=/[\u0590-\u08FF]/.test(qs[0].q)?'rtl':'ltr';
+qb.innerHTML='';qb.scrollTop=0;
+var tb=el('div','m','');tb.style.position='sticky';tb.style.top='0';tb.style.zIndex='2';
+function fmt(s){var m=Math.floor(s/60),r=s%60;return m+':'+(r<10?'0':'')+r;}
+tb.textContent=mins?'\u23F1 Time left: '+fmt(left):'Answer every question, then tap Submit.';
+qb.appendChild(tb);
+qs.forEach(function(q,i){
+qb.appendChild(el('div','qh','Question '+(i+1)+' of '+qs.length+'  \u2022  '+M+' marks'));
+qb.appendChild(el('div','qq',q.q));
+var ta=document.createElement('textarea');ta.placeholder='Write your answer...';ta.dir='auto';tas.push(ta);qb.appendChild(ta);
+});
+var st=el('div','m',''),sb=el('button','','Submit test');
+st.style.marginTop='.8rem';
+function submit(){
+if(busy||done)return;
+if(tmr){clearInterval(tmr);tmr=null;}
+busy=true;sb.disabled=true;tgt=curLang();
+st.textContent='\u23F3 Teacher is marking your answers...';
+var ans=tas.map(function(t){return t.value.trim();}),lang=tgt?tgt.n:'the same language as the questions';
+var items=qs.map(function(q,i){return {question:q.q,model_answer:q.a,student_answer:ans[i]};});
+aiText('You are a fair teacher marking a written test. For each item compare the student answer with the model answer. Give a score from 0 to '+M+' (steps of 0.5; give 0 if the answer is empty or wrong, partial marks for partly correct). Write one short feedback sentence in '+lang+' for each item. Return ONLY a JSON array in the same order, like [{"s":1.5,"f":"feedback"}].',JSON.stringify(items),120000)
+.then(function(x){
+var r=jparse(x,'[',']');
+if(!Array.isArray(r)||r.length<qs.length)throw 0;
+busy=false;done=true;showResult(r);
+}).catch(function(){busy=false;sb.disabled=false;st.textContent='\u26A0 Could not mark the test. Check your internet and tap Submit again. Your answers are kept.';if(mins&&left>0){}});
+}
+function showResult(r){
+var sc=0,rows=qs.map(function(q,i){
+var s=Math.max(0,Math.min(M,Math.round((+r[i].s||0)*2)/2));
+if(!ans0(i))s=0;
+sc+=s;return {q:q,s:s,f:String(r[i].f||''),a:ans0(i)};
+});
+function ans0(i){return tas[i].value.trim();}
+var pc=Math.round(sc*100/TOT);
+qb.innerHTML='';qb.scrollTop=0;
+qb.appendChild(el('h2','','Your test result'));
+qb.appendChild(el('div','big',sc+' / '+TOT+'  ('+pc+'%)'));
+qb.appendChild(el('div','qf',pc>=80?'Excellent work!':(pc>=50?'Good effort. Read the feedback below and try again.':'Keep practising. Listen to the lecture again and retry.')));
+rows.forEach(function(w,i){
+var d=el('div','rv');
+d.appendChild(el('b','','Q'+(i+1)+'. '+w.q.q));
+var y=el('div','','Your answer: '+(w.a||'(no answer)'));y.style.marginTop='.3rem';d.appendChild(y);
+var m=el('div','','Marks: '+w.s+' / '+M);m.style.fontWeight='600';d.appendChild(m);
+if(w.f)d.appendChild(el('div','',w.f));
+var ma=el('div','','Model answer: '+w.q.a);ma.style.color='var(--mut)';d.appendChild(ma);
+qb.appendChild(d);
+});
+var n=el('button','','New test');n.onclick=qTest;qb.appendChild(n);
+var c=el('button','s','Back to text');c.onclick=qClose;qb.appendChild(c);
+}
+sb.onclick=submit;
+qb.appendChild(sb);qb.appendChild(st);
+if(mins){
+tmr=setInterval(function(){
+if(qz.hidden||qcur!=='test'||done){clearInterval(tmr);tmr=null;return;}
+left--;tb.textContent='\u23F1 Time left: '+fmt(Math.max(left,0));
+if(left<=60)tb.style.background='rgba(239,68,68,.25)';
+if(left<=0){clearInterval(tmr);tmr=null;submit();}
+},1000);
+}
+}
+$('bask').onclick=function(){stop();qOpen('ask','Ask');qAsk();};
+$('btst').onclick=function(){stop();qOpen('test','Test');qTest();};
+
 $('pause').onclick=function(){
 if(onl&&au&&!paused){au.pause();paused=true;unwake();talk(false);}
 else if(S.speaking&&!paused){S.pause();paused=true;pf=true;clr();unwake();talk(false);}
