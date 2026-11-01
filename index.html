@@ -22,6 +22,44 @@ textarea,#view{width:100%;flex:1 1 0;min-height:10rem;font:1.15rem/1.7 system-ui
 #view .p{white-space:pre-wrap;padding:.4rem .5rem;border-radius:.4rem;margin:0 0 .4rem;cursor:pointer}
 #view .p.a{background:var(--hp);box-shadow:inset .2rem 0 0 var(--ac)}
 mark{background:var(--hl);color:#111;font-weight:700;border-radius:.25rem;padding:1px 3px;box-shadow:0 0 0 2px var(--hl)}
+.lk{background:none;color:var(--ac);text-decoration:underline;border:0;padding:.3rem;flex:none;width:auto;font-size:.9rem;font-weight:500}
+.tools{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem}.tools button{flex:1 1 4.5rem;padding:.55rem .2rem;font-size:.9rem}
+#tw{position:relative;flex:1 1 0;min-height:10rem;display:flex}
+#tw textarea{flex:1;min-height:0;padding-bottom:3.8rem}
+.tbtn{position:absolute;right:.6rem;bottom:.6rem;display:flex;gap:.4rem}.tbtn button{width:2.8rem;height:2.8rem;min-width:0;flex:none;padding:0;border-radius:50%;font-size:1.2rem;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+#bmc.on{background:#dc2626;color:#fff}
+#pn{display:none;flex:1 1 0;min-height:10rem;overflow:auto;background:var(--bg);border:1px solid var(--bd);border-radius:.5rem;padding:.7rem;font-size:1.05rem;line-height:1.6}
+#pn button{display:block;width:100%;flex:none;margin:.4rem 0}
+#pn button.s.xs{display:inline-block;width:auto;padding:.4rem .8rem;margin:0 0 .6rem}
+#pn button.opt{text-align:start;background:var(--card);color:var(--tx);border:1px solid var(--bd);padding:.75rem;font-weight:500}
+#pn button.opt.ok{background:rgba(34,197,94,.25);border-color:#16a34a}
+#pn button.opt.no{background:rgba(239,68,68,.25);border-color:#dc2626}
+#pn .qh{color:var(--mut);font-size:.9rem}#pn .qq{font-weight:600;font-size:1.15rem;margin:.4rem 0 .7rem}#pn .qf{margin:.6rem 0;font-size:.95rem}
+#pn .note{border:1px solid var(--bd);background:var(--card);border-radius:.5rem;padding:.6rem;margin-bottom:.6rem}
+#pn .note b{display:block}#pn .note small{color:var(--mut)}
+#pn .row2{display:flex;gap:.5rem}#pn .row2 button{width:auto;flex:1;margin:.4rem 0 0;padding:.5rem}
+#qzp{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#qzp[hidden]{display:none}
+.qhd{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;border-bottom:1px solid var(--bd);background:var(--card);font-size:1.2rem}
+.qhd button{flex:none;width:auto;padding:.5rem .9rem;font-size:1rem}
+#qzb{flex:1;overflow:auto;padding:1rem;max-width:46rem;width:100%;margin:0 auto}
+#qzb button{display:block;width:100%;flex:none;margin:.5rem 0}
+#qzb button.opt{text-align:start;background:var(--card);color:var(--tx);border:1px solid var(--bd);padding:.8rem;font-weight:500}
+#qzb button.opt.ok{background:rgba(34,197,94,.25);border-color:#16a34a}
+#qzb button.opt.no{background:rgba(239,68,68,.25);border-color:#dc2626}
+#qzb .qh{color:var(--mut);font-size:.95rem}#qzb .qq{font-weight:600;font-size:1.25rem;margin:.5rem 0 .8rem;line-height:1.5}
+#qzb .qf{margin:.6rem 0;font-size:1rem;line-height:1.6}#qzb h2{font-size:1.3rem;margin:.2rem 0 .8rem}
+#qzb input[type=text]{width:100%;padding:.65rem;font-size:1rem;border-radius:.5rem;border:1px solid var(--bd);background:var(--bg);color:var(--tx);margin:.4rem 0}
+#qzb .big{font-size:2.4rem;font-weight:700;color:var(--ac);margin:.4rem 0}
+#qzb .rv{border:1px solid var(--bd);background:var(--card);border-radius:.5rem;padding:.7rem;margin:.5rem 0;font-size:.95rem;line-height:1.5}
+.bar{height:.5rem;background:var(--bd);border-radius:1rem;overflow:hidden;margin:.4rem 0 .8rem}.bar i{display:block;height:100%;background:var(--ac)}
+#av{flex:none;width:4rem;height:4rem}
+#av #mo{transform-box:fill-box;transform-origin:center;transform:scaleY(.25)}
+#av.talk #mo{animation:tk .28s ease-in-out infinite}
+@keyframes tk{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+.tb{display:none;gap:.7rem;align-items:center;margin-top:.8rem}.tb.on{display:flex}.tb .col{flex:1;min-width:0}
+.tb input[type=text]{width:100%;padding:.65rem;font-size:1rem;border-radius:.5rem;border:1px solid var(--bd);background:var(--bg);color:var(--tx);margin-bottom:.4rem}
+.tb button{width:100%;flex:none;padding:.6rem}
 label{display:block;font-size:.9rem;color:var(--mut);margin:.7rem 0 .25rem}
 input[type=search],select{width:100%;padding:.65rem;font-size:1rem;border-radius:.5rem;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
 input[type=search]{margin-bottom:.4rem}
@@ -40,8 +78,11 @@ button.s{background:var(--bd);color:var(--tx)}
 <h1>Text Reader</h1>
 <div class="c">
 <div class="m" id="msg"></div>
-<textarea id="t" placeholder="Paste or type text here..."></textarea>
+<div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button></div>
+<input type="file" id="pdf" accept="application/pdf,.pdf" hidden>
+<div id="tw"><textarea id="t" placeholder="Paste or type text here..."></textarea><div class="tbtn"><button id="bpdf" type="button" aria-label="PDF" title="Add text from a PDF">📄</button><button id="bmc" type="button" aria-label="Mic: speak to type" title="Speak to type">🎤</button></div></div>
 <div id="view"></div>
+<div id="pn"></div>
 <label>Read in (language)</label>
 <input type="search" id="ls" placeholder="Search language...">
 <select id="lg"></select>
@@ -59,11 +100,12 @@ button.s{background:var(--bd);color:var(--tx)}
 </div>
 </div>
 </div>
+<div id="qzp" hidden><div class="qhd"><button class="s" id="qback" type="button">← Back</button><b id="qttl">Quiz</b></div><div id="qzb"></div></div>
 <script>(function(){function f(){var iw=window.innerWidth,sw=screen.width,k=(sw>0&&sw<700&&iw>sw*1.25)?iw/sw:1;document.documentElement.style.fontSize=(16*k)+'px';}f();window.addEventListener('resize',f);window.addEventListener('orientationchange',function(){setTimeout(f,200)});})();</script>
 <script>
 (function(){
 var S=window.speechSynthesis,$=function(i){return document.getElementById(i)},
-T=$('t'),V=$('view'),sel=$('v'),ls=$('ls'),lg=$('lg'),rt=$('rt'),pt=$('pt'),msg=$('msg');
+T=$('t'),TW=$('tw'),V=$('view'),pn=$('pn'),sel=$('v'),ls=$('ls'),lg=$('lg'),rt=$('rt'),pt=$('pt'),msg=$('msg');
 if(!S){msg.textContent='Text-to-speech is not supported in this browser.';return;}
 var paras=[],orig_='',tm=null,sid=0,paused=false,pf=false,mpc1=55,cal=false,cur=null,bc=0,t0=0,est={k:0,w:[],D:0};
 var LANGS=[
@@ -100,12 +142,13 @@ fillLangs();S.onvoiceschanged=fillVoices;
 rt.oninput=function(){$('rv').textContent=(+rt.value).toFixed(1)};
 pt.oninput=function(){$('pv').textContent=(+pt.value).toFixed(1)};
 function esc(x){return x.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
-function show(on){V.style.display=on?'block':'none';T.style.display=on?'none':'block';}
+function show(on){V.style.display=on?'block':'none';TW.style.display=on?'none':'flex';pn.style.display='none';}
 function clr(){if(tm){clearTimeout(tm);tm=null;}}
 var wl=null,wlOn=false;
 function wake(){wlOn=true;if(navigator.wakeLock&&!wl){navigator.wakeLock.request('screen').then(function(l){wl=l;l.addEventListener('release',function(){wl=null;});}).catch(function(){});}}
 function unwake(){wlOn=false;if(wl){wl.release().catch(function(){});wl=null;}}
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&wlOn)wake();});
+function talk(on){var a=$('av');if(a)a.classList.toggle('talk',!!on);}
 var au=null,onl=false,tick=null;
 function stopOnline(){onl=false;if(tick){clearInterval(tick);tick=null;}if(au){au.onended=au.onerror=au.onplaying=null;try{au.pause();au.removeAttribute('src');}catch(e){}au=null;}}
 function startOnline(cs,my,rate,txt){
@@ -133,7 +176,7 @@ return ws;
 function play(ix,v){
 if(my!==sid)return;
 if(ix>=cs.length){
-unwake();onl=false;
+unwake();onl=false;talk(false);
 if(pa>=0){pe[pa].className='p';pe[pa].textContent=orig_.slice(paras[pa].s,paras[pa].e);pa=-1;}
 msg.textContent='Tap any paragraph to read from there.';return;
 }
@@ -144,7 +187,7 @@ if(ws.length){render(ws[0].i,ws[0].l);last=0;}
 if(!fbUsed)msg.textContent='\u23F3 Loading online voice...';
 a.onplaying=function(){
 if(my!==sid||au!==a)return;
-bv=v;
+bv=v;talk(true);
 msg.textContent=fbUsed?'\uD83D\uDD0A Reading with '+fbName+' voice (no '+tgt.n+' voice exists, pronunciation may differ)...':'\uD83D\uDD0A Reading (online voice)...';
 };
 tick=setInterval(function(){
@@ -156,7 +199,7 @@ if(k!==last){last=k;render(ws[k].i,ws[k].l);}
 a.onended=function(){if(my!==sid||au!==a)return;clearInterval(tick);tick=null;play(ix+1,bv);};
 a.onerror=function(){
 if(my!==sid||au!==a)return;
-clearInterval(tick);tick=null;
+clearInterval(tick);tick=null;talk(false);
 if(!navigator.onLine){unwake();msg.textContent='\u2139 Online voice needs internet. The text is shown on screen.';return;}
 if(v<U.length-1){play(ix,v+1);return;}
 var fb=tgt&&tgt.fb;
@@ -248,7 +291,7 @@ if(v)u.voice=v;
 u.lang=lang;u.rate=rate;u.pitch=pitch;
 u.onstart=function(){
 if(my!==sid)return;
-started=true;mk(ix+2);
+started=true;talk(true);mk(ix+2);
 clr();cur=c;bc=0;pf=false;est={k:0,w:[],D:0};t0=Date.now();msg.textContent='\uD83D\uDD0A Reading...';
 tm=setTimeout(function(){if(my===sid&&cur===c&&!bc)startEst(c,Date.now()-t0,rate);},350);
 };
@@ -264,7 +307,7 @@ if(my!==sid)return;
 clr();
 var len=c.e-c.s,a=Date.now()-t0;
 if(!bc&&!pf&&len>15&&a>200){var obs=a/len*rate;mpc1=cal?0.5*mpc1+0.5*obs:obs;cal=true;}
-if(ix===cs.length-1){unwake();if(pa>=0){pe[pa].className='p';pe[pa].textContent=orig_.slice(paras[pa].s,paras[pa].e);pa=-1;}msg.textContent='Tap any paragraph to read from there.';}
+if(ix===cs.length-1){unwake();talk(false);if(pa>=0){pe[pa].className='p';pe[pa].textContent=orig_.slice(paras[pa].s,paras[pa].e);pa=-1;}msg.textContent='Tap any paragraph to read from there.';}
 else{var nx=cs[ix+1],m2=/\S+/.exec(orig_.slice(nx.s));render(nx.s,m2?m2[0].length:1);}
 };
 u.onerror=function(e){
@@ -274,7 +317,7 @@ clr();
 if(tgt){S.cancel();setTimeout(function(){run('online',0,c.s)},100);return;}
 var nx=mode==='sel'?'auto':(mode==='auto'?'def':'');
 if(nx&&tries<2){S.cancel();setTimeout(function(){run(nx,tries+1,c.s)},150);return;}
-sid++;unwake();
+sid++;unwake();talk(false);
 msg.textContent='\u2139 Voice could not start ('+e.error+'). Pick "Online voice" in the Voice list.';
 };
 S.speak(u);
@@ -314,15 +357,13 @@ return Promise.all(ws).then(function(){return res.map(function(a){return a.join(
 }
 function mode(){return sel.value==='-2'?'auto':(sel.value==='-1'?'def':(sel.value==='-3'?'online':'sel'));}
 function teach(o,L){
-var lang=L?L.n:'the same language as the text',ac=new AbortController(),t=setTimeout(function(){ac.abort()},60000);
+var lang=L?L.n:'the same language as the text';
 var sys='You are a kind, clear teacher giving a spoken lecture to a student. Explain the given text in '+lang+'. Keep the whole lecture to about 300 words. First explain the main idea simply, then go through each point with extra details, reasons, simple examples and things to remember, then finish with a short summary. Write plain spoken paragraphs only: no markdown, no headings, no bullet symbols, no emojis.';
-return fetch('https://text.pollinations.ai/',{method:'POST',headers:{'Content-Type':'application/json'},signal:ac.signal,
-body:JSON.stringify({model:'openai',messages:[{role:'system',content:sys},{role:'user',content:o.slice(0,6000)}]})})
-.then(function(r){clearTimeout(t);if(!r.ok)throw 0;return r.text()})
-.then(function(x){x=x.replace(/[#*_`>~|]/g,' ').replace(/\n{3,}/g,'\n\n').trim();if(!x)throw 0;return x;});
+return aiText(sys,o.slice(0,6000),60000).then(function(x){x=x.replace(/[#*_`>~|]/g,' ').replace(/\n{3,}/g,'\n\n').trim();if(!x)throw 0;return x;});
 }
 $('play').onclick=function(){
-if(paused){if(onl&&au){au.play();paused=false;wake();return;}S.resume();paused=false;wake();if(!bc&&est.w.length)step(est.k);return;}
+if(micOn&&rec){rec.stop();}
+if(paused){if(onl&&au){au.play();paused=false;wake();talk(true);return;}S.resume();paused=false;wake();talk(true);if(!bc&&est.w.length)step(est.k);return;}
 var o=T.value.trim();if(!o||busy)return;
 window.scrollTo(0,0);
 tgt=curLang();
@@ -344,11 +385,224 @@ else{msg.textContent='\u23F3 Translating to '+tgt.n+'...';job=tr(o.replace(/[#*_
 job.then(function(t){busy=false;cache[key]=t;go(t);})
 .catch(function(){busy=false;msg.textContent=tc?'\u26A0 Teacher could not respond. Check your internet and try again.':'\u26A0 Translation failed. Check your internet and try again.';});
 };
-$('pause').onclick=function(){
-if(onl&&au&&!paused){au.pause();paused=true;unwake();}
-else if(S.speaking&&!paused){S.pause();paused=true;pf=true;clr();unwake();}
+var PROXY='PASTE_WORKER_URL_HERE';
+function getCode(){try{return localStorage.getItem('tr_cc')||'';}catch(e){return '';}}
+function proxyOn(){return /^https:\/\//.test(PROXY)&&!!getCode();}
+function gp(body){
+return fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:getCode(),body:body})})
+.then(function(r){if(!r.ok)throw 'Class AI HTTP '+r.status;return r.json();})
+.then(function(j){
+var c=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts,x=c?c.map(function(q){return q.text||''}).join(''):'';
+if(!x.trim())throw 'Class AI empty';return x;
+});
+}
+function gkCall(body){
+var key=getKey(),ms=['gemini-flash-latest','gemini-2.5-flash'],last='';
+function t(i){
+if(i>=ms.length)return Promise.reject('Gemini failed ('+last+')');
+return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+ms[i]+':generateContent?key='+encodeURIComponent(key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+.then(function(r){if(!r.ok)throw 'HTTP '+r.status;return r.json();})
+.then(function(j){var c=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts,x=c?c.map(function(q){return q.text||''}).join(''):'';if(!x.trim())throw 'empty';return x;})
+.catch(function(e){last=ms[i]+' '+(typeof e==='string'?e:'network');return t(i+1);});
+}
+return t(0);
+}
+function aiText(sys,usr,ms){
+var body={systemInstruction:{parts:[{text:sys}]},contents:[{role:'user',parts:[{text:usr}]}]},chain=[];
+if(getKey())chain.push(function(){return gkCall(body);});
+if(proxyOn())chain.push(function(){return gp(body);});
+chain.push(function(){return aiPost([{role:'system',content:sys},{role:'user',content:usr}],ms);});
+return chain.reduce(function(p,fn){return p.catch(fn);},Promise.reject('start'));
+}
+(function(){
+try{
+var m=/[?&]c=([^&]+)/.exec(location.search);
+if(m){
+localStorage.setItem('tr_cc',decodeURIComponent(m[1]));
+history.replaceState(null,'',location.pathname+location.hash);
+setTimeout(function(){msg.textContent='\u2705 Class code added automatically. Photo, Quiz and Teacher are ready.';},300);
+}
+}catch(e){}
+})();
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+function aiPost(messages,ms){
+var ac=new AbortController(),t=setTimeout(function(){ac.abort()},ms);
+return fetch('https://text.pollinations.ai/',{method:'POST',headers:{'Content-Type':'application/json'},signal:ac.signal,body:JSON.stringify({model:'openai',messages:messages})})
+.then(function(r){clearTimeout(t);if(!r.ok)throw 0;return r.text()})
+.then(function(x){x=x.trim();if(!x)throw 0;return x;});
+}
+function closePanel(){pn.style.display='none';pn.innerHTML='';TW.style.display='flex';}
+function openPanel(){stop();TW.style.display='none';V.style.display='none';pn.style.display='block';pn.innerHTML='';}
+/* Notes */
+function getN(){try{return JSON.parse(localStorage.getItem('tr_notes')||'[]');}catch(e){return [];}}
+function setN(a){try{localStorage.setItem('tr_notes',JSON.stringify(a));return true;}catch(e){return false;}}
+$('bsv').onclick=function(){
+var x=T.value.trim();
+if(!x){msg.textContent='Nothing to save. Paste some text first.';return;}
+var a=getN();
+a.unshift({id:Date.now(),t:x.split('\n')[0].slice(0,50),d:new Date().toLocaleDateString(),x:x.slice(0,30000)});
+msg.textContent=setN(a.slice(0,50))?'\u2705 Saved to Notes.':'\u26A0 Could not save (storage is full or blocked).';
 };
-function stop(){sid++;clr();stopOnline();S.cancel();paused=false;unwake();show(false);msg.textContent='';}
+function showNotes(){
+openPanel();pn.dir='auto';
+var x=el('button','s xs','\u2715 Close');x.onclick=closePanel;pn.appendChild(x);
+var a=getN();
+if(!a.length){pn.appendChild(el('div','qf','No saved notes yet. Paste text and tap Save.'));return;}
+a.forEach(function(n){
+var d=el('div','note');
+d.appendChild(el('b','',n.t||'(untitled)'));d.appendChild(el('small','',n.d||''));
+var r=el('div','row2'),l=el('button','','Open'),dl=el('button','s','Delete');
+l.onclick=function(){T.value=n.x;closePanel();msg.textContent='';};
+dl.onclick=function(){setN(getN().filter(function(z){return z.id!==n.id}));showNotes();};
+r.appendChild(l);r.appendChild(dl);d.appendChild(r);pn.appendChild(d);
+});
+}
+$('bnt').onclick=showNotes;
+function loadScript(src,test){
+return new Promise(function(res,rej){
+if(test&&window[test])return res();
+var sc=document.createElement('script');sc.src=src;sc.onload=res;sc.onerror=function(){rej('script');};document.head.appendChild(sc);
+});
+}
+function getKey(){try{return localStorage.getItem('tr_gk')||'';}catch(e){return '';}}
+/* PDF to text */
+var PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+$('bpdf').onclick=function(){if(!busy)$('pdf').click();};
+$('pdf').onchange=function(){
+var f=this.files&&this.files[0];this.value='';
+if(!f||busy)return;
+busy=true;msg.textContent='\u23F3 Reading the PDF...';
+loadScript(PDFJS+'pdf.min.js','pdfjsLib').then(function(){
+window.pdfjsLib.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.js';
+return f.arrayBuffer();
+}).then(function(buf){return window.pdfjsLib.getDocument({data:buf}).promise;})
+.then(function(doc){
+var n=Math.min(doc.numPages,60),out=[],i=1;
+function next(){
+if(i>n)return Promise.resolve();
+msg.textContent='\u23F3 Reading the PDF (page '+i+' of '+n+')...';
+return doc.getPage(i).then(function(pg){return pg.getTextContent();}).then(function(tc){
+var t='';
+tc.items.forEach(function(it){t+=it.str+(it.hasEOL?'\n':' ');});
+out.push(t.replace(/[ \t]+\n/g,'\n').replace(/ {2,}/g,' ').trim());
+i++;return next();
+});
+}
+return next().then(function(){return {txt:out.filter(Boolean).join('\n\n'),n:doc.numPages,used:n};});
+}).then(function(r){
+busy=false;
+if(!r.txt.trim()){msg.textContent='\u26A0 This PDF has no selectable text (it may be a scanned copy), so it cannot be read.';return;}
+closePanel();
+T.value=(T.value.trim()?T.value.trim()+'\n\n':'')+r.txt.slice(0,60000);
+msg.textContent='\u2705 PDF text added'+(r.n>r.used?' (first '+r.used+' pages only)':'')+'.';
+}).catch(function(e){busy=false;msg.textContent='\u26A0 Could not read the PDF. '+(typeof e==='string'?e:'Check your internet and try again.');});
+};
+/* Mic typing */
+var rec=null,micOn=false;
+$('bmc').onclick=function(){
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,b=$('bmc');
+if(!SR){msg.textContent='\u26A0 Mic typing is not supported in this browser. Please use Chrome.';return;}
+if(micOn&&rec){rec.stop();return;}
+stop();closePanel();
+var L=curLang(),base=T.value.trim()?T.value.replace(/\s+$/,'')+' ':'';
+rec=new SR();rec.lang=L?L.sc:(navigator.language||'en-US');rec.continuous=true;rec.interimResults=true;
+rec.onstart=function(){micOn=true;b.textContent='\u23F9';b.classList.add('on');msg.textContent='\uD83C\uDFA4 Listening ('+rec.lang+')... speak now. Tap the red button when done.';};
+rec.onresult=function(e){
+var x='';
+for(var i=0;i<e.results.length;i++)x+=e.results[i][0].transcript;
+T.value=base+x;T.scrollTop=T.scrollHeight;
+};
+rec.onerror=function(e){
+var m={'not-allowed':'Mic permission is blocked. Allow the microphone for this app (open the app from the GitHub link, not from a file).','service-not-allowed':'Mic permission is blocked. Allow the microphone for this app.','no-speech':'No speech heard. Try again closer to the mic.','network':'Mic typing needs internet.','language-not-supported':'This language is not supported for mic typing. Pick another language in Read in.','audio-capture':'No microphone found.'};
+if(e.error!=='aborted')msg.textContent='\u26A0 '+(m[e.error]||('Mic error: '+e.error));
+};
+rec.onend=function(){micOn=false;b.textContent='\uD83C\uDFA4';b.classList.remove('on');if(msg.textContent.indexOf('\uD83C\uDFA4')===0)msg.textContent='';};
+try{rec.start();}catch(x){}
+};
+/* Quiz page */
+var qz=$('qzp'),qb=$('qzb');
+var qcur='';
+function qOpen(name,title){qcur=name;$('qttl').textContent=title;qz.hidden=false;if(location.hash!=='#'+name)location.hash=name;}
+function qClose(){qz.hidden=true;qb.innerHTML='';if(location.hash==='#'+qcur)history.back();}
+window.addEventListener('hashchange',function(){if(location.hash!=='#'+qcur&&!qz.hidden){qz.hidden=true;qb.innerHTML='';}});
+$('qback').onclick=qClose;
+function selBox(opts,def){var x=document.createElement('select');opts.forEach(function(o){var op=document.createElement('option');op.value=o[0];op.textContent=o[1];x.appendChild(op);});x.value=def;return x;}
+function qStart(){
+qb.innerHTML='';qb.dir='auto';qb.scrollTop=0;
+var src=T.value.trim();
+qb.appendChild(el('h2','','Make a quiz from your text'));
+if(!src){qb.appendChild(el('div','qf','Your text box is empty. Tap Back, paste or write some text, then open Quiz again.'));return;}
+qb.appendChild(el('div','qf','Text: '+src.slice(0,140).replace(/\s+/g,' ')+(src.length>140?'...':'')));
+qb.appendChild(el('label','','How many questions?'));
+var nS=selBox([['5','5 questions'],['10','10 questions'],['15','15 questions']],'5');qb.appendChild(nS);
+qb.appendChild(el('label','','Level'));
+var lS=selBox([['easy','Easy'],['medium','Medium'],['hard','Hard']],'medium');qb.appendChild(lS);
+var st=el('div','m',''),go=el('button','','Start quiz');
+st.style.marginTop='.8rem';
+go.onclick=function(){
+if(busy)return;
+busy=true;tgt=curLang();go.disabled=true;
+st.textContent='\u23F3 Teacher is preparing the quiz...';
+var lang=tgt?tgt.n:'the same language as the text';
+aiText('You are a teacher making a quiz. Create exactly '+nS.value+' multiple-choice questions of '+lS.value+' difficulty from the text. Write the questions and options in '+lang+'. Return ONLY a JSON array with no markdown, like [{"q":"question","o":["option A","option B","option C","option D"],"a":0,"w":"one short sentence explaining the answer"}] where a is the index (0 to 3) of the correct option.',src.slice(0,5000),120000)
+.then(function(x){
+var a=x.indexOf('['),b=x.lastIndexOf(']'),qs=JSON.parse(x.slice(a,b+1)).filter(function(q){return q&&typeof q.q==='string'&&Array.isArray(q.o)&&q.o.length>1&&Number.isInteger(q.a)&&q.a>=0&&q.a<q.o.length;});
+if(!qs.length)throw 0;
+busy=false;runQuiz(qs);
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the quiz. Check your internet and try again.';});
+};
+qb.appendChild(go);qb.appendChild(st);
+}
+function runQuiz(qs){
+qb.dir=/[\u0590-\u08FF]/.test(qs[0].q)?'rtl':'ltr';
+var i=0,sc=0,wrong=[];
+function draw(){
+qb.innerHTML='';qb.scrollTop=0;
+if(i>=qs.length){
+var pc=Math.round(sc*100/qs.length);
+qb.appendChild(el('h2','','Your result'));
+qb.appendChild(el('div','big',sc+' / '+qs.length+'  ('+pc+'%)'));
+qb.appendChild(el('div','qf',pc>=80?'Excellent work!':(pc>=50?'Good effort. Review the points below and try again.':'Keep practising. Listen to the lecture again and retry.')));
+if(wrong.length){
+qb.appendChild(el('h2','','Review'));
+wrong.forEach(function(q){
+var d=el('div','rv');
+d.appendChild(el('b','',q.q));
+d.appendChild(el('div','','Correct answer: '+q.o[q.a]));
+if(q.w)d.appendChild(el('div','',q.w));
+qb.appendChild(d);
+});
+}
+var r=el('button','','Try again');r.onclick=function(){i=0;sc=0;wrong=[];draw();};qb.appendChild(r);
+var n=el('button','s','New quiz');n.onclick=qStart;qb.appendChild(n);
+var c=el('button','s','Back to text');c.onclick=qClose;qb.appendChild(c);
+return;
+}
+var q=qs[i],btns=[];
+qb.appendChild(el('div','qh','Question '+(i+1)+' of '+qs.length+'   \u2022   Score '+sc));
+var bar=el('div','bar'),fill=el('i');fill.style.width=Math.round(i*100/qs.length)+'%';bar.appendChild(fill);qb.appendChild(bar);
+qb.appendChild(el('div','qq',q.q));
+var fb=el('div','qf',''),nx=el('button','',i===qs.length-1?'See result':'Next');
+nx.style.display='none';nx.onclick=function(){i++;draw();};
+q.o.forEach(function(t,k){
+var b=el('button','opt',t);
+b.onclick=function(){
+btns.forEach(function(z){z.disabled=true;});
+if(k===q.a){sc++;b.classList.add('ok');}else{b.classList.add('no');btns[q.a].classList.add('ok');wrong.push(q);}
+fb.textContent=q.w||'';nx.style.display='block';nx.scrollIntoView({block:'nearest'});
+};
+btns.push(b);qb.appendChild(b);
+});
+qb.appendChild(fb);qb.appendChild(nx);
+}
+draw();
+}
+$('bqz').onclick=function(){stop();qOpen('quiz','Quiz');qStart();};
+$('pause').onclick=function(){
+if(onl&&au&&!paused){au.pause();paused=true;unwake();talk(false);}
+else if(S.speaking&&!paused){S.pause();paused=true;pf=true;clr();unwake();talk(false);}
+};
+function stop(){sid++;clr();stopOnline();S.cancel();paused=false;unwake();talk(false);show(false);msg.textContent='';}
 $('stop').onclick=stop;
 V.onclick=function(e){
 var d=e.target.closest?e.target.closest('.p'):null;
