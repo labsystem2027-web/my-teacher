@@ -73,6 +73,20 @@ button.s{background:var(--bd);color:var(--tx)}
 .m:empty{display:none}
 #qzb textarea{display:block;width:100%;flex:none;min-height:5.5rem;font:1rem/1.5 system-ui,sans-serif;resize:vertical;margin:.3rem 0 1rem;padding:.65rem}
 #qzb input[type=text]{margin-bottom:.5rem}
+#qzb .row2{display:flex;gap:.5rem}#qzb .row2 button{flex:1;width:auto;margin:.5rem 0}
+#qzb .card{min-height:12rem;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.3rem;line-height:1.5;padding:1.2rem;border:2px solid var(--bd);border-radius:1rem;background:var(--card);cursor:pointer;margin:.6rem 0;white-space:pre-wrap}
+#qzb .card.bk{background:var(--hp);border-color:var(--ac)}
+#qzb select{margin-bottom:.4rem}
+@media print{
+body{background:#fff!important;color:#000!important;padding:0!important}
+.w{display:none!important}
+#qzp{position:static!important;display:block!important;background:#fff!important}
+.qhd{display:none!important}
+#qzb{overflow:visible!important;max-width:none!important;padding:0!important;color:#000!important}
+#qzb button,#qzb .row2{display:none!important}
+#qzb .rv{background:#fff!important;border-color:#999!important;break-inside:avoid}
+#qzb .big{color:#000!important}
+}
 </style>
 </head>
 <body>
@@ -80,7 +94,7 @@ button.s{background:var(--bd);color:var(--tx)}
 <h1>My Teacher</h1>
 <div class="c">
 <div class="m" id="msg"></div>
-<div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button><button class="s" id="bask">💬 Ask</button><button class="s" id="btst">📝 Test</button></div>
+<div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button><button class="s" id="bask">💬 Ask</button><button class="s" id="btst">📝 Test</button><button class="s" id="bcd">🗂 Cards</button><button class="s" id="bhs">📊 Progress</button><button class="s" id="bsm">📄 Summary</button></div>
 <input type="file" id="pdf" accept="application/pdf,.pdf" hidden>
 <div id="tw"><textarea id="t" placeholder="Paste or type text here..."></textarea><div class="tbtn"><button id="bpdf" type="button" aria-label="PDF" title="Add text from a PDF">📄</button><button id="bmc" type="button" aria-label="Mic: speak to type" title="Speak to type">🎤</button></div></div>
 <div id="view"></div>
@@ -438,25 +452,48 @@ function openPanel(){stop();TW.style.display='none';V.style.display='none';pn.st
 /* Notes */
 function getN(){try{return JSON.parse(localStorage.getItem('tr_notes')||'[]');}catch(e){return [];}}
 function setN(a){try{localStorage.setItem('tr_notes',JSON.stringify(a));return true;}catch(e){return false;}}
+function askSub(def){
+var x=prompt('Subject name (for example Biology, Urdu, Math).\nLeave empty for General.',def||'');
+if(x===null)return null;
+x=x.trim().slice(0,30);return x||'General';
+}
+function lastSub(){try{return localStorage.getItem('tr_ls')||'';}catch(e){return '';}}
+function saveNote(t,x,sub){
+var a=getN();
+a.unshift({id:Date.now(),t:t.slice(0,50),d:new Date().toLocaleDateString(),x:x.slice(0,30000),sub:sub||'General'});
+try{localStorage.setItem('tr_ls',sub||'General');}catch(e){}
+return setN(a.slice(0,50));
+}
 $('bsv').onclick=function(){
 var x=T.value.trim();
 if(!x){msg.textContent='Nothing to save. Paste some text first.';return;}
-var a=getN();
-a.unshift({id:Date.now(),t:x.split('\n')[0].slice(0,50),d:new Date().toLocaleDateString(),x:x.slice(0,30000)});
-msg.textContent=setN(a.slice(0,50))?'\u2705 Saved to Notes.':'\u26A0 Could not save (storage is full or blocked).';
+var sub=askSub(lastSub());if(sub===null)return;
+msg.textContent=saveNote(x.split('\n')[0],x,sub)?'\u2705 Saved to Notes ('+sub+').':'\u26A0 Could not save (storage is full or blocked).';
 };
+var nf='';
 function showNotes(){
 openPanel();pn.dir='auto';
 var x=el('button','s xs','\u2715 Close');x.onclick=closePanel;pn.appendChild(x);
 var a=getN();
 if(!a.length){pn.appendChild(el('div','qf','No saved notes yet. Paste text and tap Save.'));return;}
+var subs=[];
+a.forEach(function(n){var s=n.sub||'General';if(subs.indexOf(s)<0)subs.push(s);});
+subs.sort();
+if(nf&&subs.indexOf(nf)<0)nf='';
+var fl=selBox([['','All subjects ('+a.length+')']].concat(subs.map(function(s){return [s,s+' ('+a.filter(function(n){return (n.sub||'General')===s;}).length+')'];})),nf);
+fl.style.marginBottom='.6rem';
+fl.onchange=function(){nf=fl.value;showNotes();};
+pn.appendChild(fl);
 a.forEach(function(n){
+var s=n.sub||'General';
+if(nf&&s!==nf)return;
 var d=el('div','note');
-d.appendChild(el('b','',n.t||'(untitled)'));d.appendChild(el('small','',n.d||''));
-var r=el('div','row2'),l=el('button','','Open'),dl=el('button','s','Delete');
+d.appendChild(el('b','',n.t||'(untitled)'));d.appendChild(el('small','',s+'  \u2022  '+(n.d||'')));
+var r=el('div','row2'),l=el('button','','Open'),sj=el('button','s','Subject'),dl=el('button','s','Delete');
 l.onclick=function(){T.value=n.x;closePanel();msg.textContent='';};
+sj.onclick=function(){var y=askSub(s);if(y===null)return;var all=getN();all.forEach(function(z){if(z.id===n.id)z.sub=y;});setN(all);showNotes();};
 dl.onclick=function(){setN(getN().filter(function(z){return z.id!==n.id}));showNotes();};
-r.appendChild(l);r.appendChild(dl);d.appendChild(r);pn.appendChild(d);
+r.appendChild(l);r.appendChild(sj);r.appendChild(dl);d.appendChild(r);pn.appendChild(d);
 });
 }
 $('bnt').onclick=showNotes;
@@ -524,9 +561,9 @@ try{rec.start();}catch(x){}
 /* Quiz page */
 var qz=$('qzp'),qb=$('qzb');
 var qcur='';
-function qOpen(name,title){qcur=name;$('qttl').textContent=title;qz.hidden=false;if(location.hash!=='#'+name)location.hash=name;}
-function qClose(){qz.hidden=true;qb.innerHTML='';if(location.hash==='#'+qcur)history.back();}
-window.addEventListener('hashchange',function(){if(location.hash!=='#'+qcur&&!qz.hidden){qz.hidden=true;qb.innerHTML='';}});
+function qOpen(name,title){qSpeakStop();qcur=name;$('qttl').textContent=title;qz.hidden=false;if(location.hash!=='#'+name)location.hash=name;}
+function qClose(){qSpeakStop();qz.hidden=true;qb.innerHTML='';if(location.hash==='#'+qcur)history.back();}
+window.addEventListener('hashchange',function(){if(location.hash!=='#'+qcur&&!qz.hidden){qSpeakStop();qz.hidden=true;qb.innerHTML='';}});
 $('qback').onclick=qClose;
 function selBox(opts,def){var x=document.createElement('select');opts.forEach(function(o){var op=document.createElement('option');op.value=o[0];op.textContent=o[1];x.appendChild(op);});x.value=def;return x;}
 function qStart(){
@@ -557,11 +594,12 @@ qb.appendChild(go);qb.appendChild(st);
 }
 function runQuiz(qs){
 qb.dir=/[\u0590-\u08FF]/.test(qs[0].q)?'rtl':'ltr';
-var i=0,sc=0,wrong=[];
+var i=0,sc=0,wrong=[],hd=0;
 function draw(){
 qb.innerHTML='';qb.scrollTop=0;
 if(i>=qs.length){
 var pc=Math.round(sc*100/qs.length);
+if(!hd){hd=1;addHist('Quiz',sc,qs.length,wrong.map(function(q){return {q:q.q,a:q.o[q.a]};}));}
 qb.appendChild(el('h2','','Your result'));
 qb.appendChild(el('div','big',sc+' / '+qs.length+'  ('+pc+'%)'));
 qb.appendChild(el('div','qf',pc>=80?'Excellent work!':(pc>=50?'Good effort. Review the points below and try again.':'Keep practising. Listen to the lecture again and retry.')));
@@ -575,7 +613,8 @@ if(q.w)d.appendChild(el('div','',q.w));
 qb.appendChild(d);
 });
 }
-var r=el('button','','Try again');r.onclick=function(){i=0;sc=0;wrong=[];draw();};qb.appendChild(r);
+var r=el('button','','Try again');r.onclick=function(){i=0;sc=0;wrong=[];hd=0;draw();};qb.appendChild(r);
+qb.appendChild(actBtns(function(){return 'My Teacher - Quiz result\n'+sc+' / '+qs.length+' ('+pc+'%)\n'+new Date().toLocaleDateString();},'My Teacher - Quiz result'));
 var n=el('button','s','New quiz');n.onclick=qStart;qb.appendChild(n);
 var c=el('button','s','Back to text');c.onclick=qClose;qb.appendChild(c);
 return;
@@ -609,9 +648,13 @@ var src=T.value.trim();
 qb.appendChild(el('h2','','Ask a question about your text'));
 if(!src){noSrc();return;}
 qb.appendChild(el('div','qf','Text: '+src.slice(0,140).replace(/\s+/g,' ')+(src.length>140?'...':'')));
-var inp=document.createElement('input');inp.type='text';inp.placeholder='Type your question...';
+var inp=document.createElement('input');inp.type='text';inp.placeholder='Type or speak your question...';
 var go=el('button','','Ask'),st=el('div','m',''),lst=el('div','');
 st.style.marginTop='.8rem';
+var L0=curLang(),def=L0?L0.sc:(/^ur/i.test(navigator.language||'')?'ur-PK':'en-US');
+var opts=[['ur-PK','Urdu'],['en-US','English'],['hi-IN','Hindi'],['pa-IN','Punjabi'],['ar-SA','Arabic']];
+if(!opts.some(function(o){return o[0]===def;}))def='en-US';
+var vl=selBox(opts,def),mic=el('button','s','\uD83C\uDFA4 Speak your question');
 function ask(){
 var q=inp.value.trim();
 if(!q||busy)return;
@@ -625,15 +668,30 @@ if(!x)throw 0;
 var d=el('div','rv');d.dir='auto';
 d.appendChild(el('b','',q));
 var a=el('div','',x);a.style.whiteSpace='pre-wrap';a.style.marginTop='.4rem';d.appendChild(a);
+var sp=el('button','s','\uD83D\uDD0A Listen');sp.onclick=function(){speakAns(x,sp);};d.appendChild(sp);
 lst.insertBefore(d,lst.firstChild);
 inp.value='';st.textContent='';busy=false;go.disabled=false;
 }).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not get an answer. Check your internet and try again.';});
 }
 go.onclick=ask;
 inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();ask();}};
-qb.appendChild(inp);qb.appendChild(go);qb.appendChild(st);qb.appendChild(lst);
+mic.onclick=function(){
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR){st.textContent='\u26A0 Mic is not supported in this browser. Please use Chrome.';return;}
+if(arec){try{arec.stop();}catch(e){}return;}
+qSpeakStop();
+var r=new SR(),got='';arec=r;r.lang=vl.value;r.continuous=false;r.interimResults=true;
+r.onstart=function(){mic.textContent='\u23F9 Listening... tap to stop';st.textContent='\uD83C\uDFA4 Speak now...';};
+r.onresult=function(e){got='';for(var i=0;i<e.results.length;i++)got+=e.results[i][0].transcript;inp.value=got;};
+r.onerror=function(e){var m={'not-allowed':'Mic permission is blocked. Allow the microphone for this app.','service-not-allowed':'Mic permission is blocked. Allow the microphone for this app.','no-speech':'No speech heard. Try again closer to the mic.','network':'Mic needs internet.','audio-capture':'No microphone found.'};if(e.error!=='aborted')st.textContent='\u26A0 '+(m[e.error]||('Mic error: '+e.error));};
+r.onend=function(){arec=null;mic.textContent='\uD83C\uDFA4 Speak your question';if(got&&inp.value.trim()&&!busy)ask();};
+try{r.start();}catch(x){arec=null;}
+};
+qb.appendChild(inp);qb.appendChild(go);
+qb.appendChild(el('label','','Speak in'));qb.appendChild(vl);qb.appendChild(mic);
+qb.appendChild(st);qb.appendChild(lst);
 }
-var tmr=null;
+var tmr=null,arec=null,ttsAu=null,ttsId=0,ttsBtn=null;
 function qTest(){
 if(tmr){clearInterval(tmr);tmr=null;}
 qb.innerHTML='';qb.dir='auto';qb.scrollTop=0;
@@ -700,6 +758,8 @@ sc+=s;return {q:q,s:s,f:String(r[i].f||''),a:ans0(i)};
 });
 function ans0(i){return tas[i].value.trim();}
 var pc=Math.round(sc*100/TOT);
+addHist('Test',sc,TOT,rows.filter(function(w){return w.s<=M/2;}).map(function(w){return {q:w.q.q,a:w.q.a};}));
+var shT='My Teacher - Test result\n'+sc+' / '+TOT+' ('+pc+'%)\n'+new Date().toLocaleDateString()+'\n'+rows.map(function(w,i){return 'Q'+(i+1)+': '+w.s+'/'+M;}).join('\n');
 qb.innerHTML='';qb.scrollTop=0;
 qb.appendChild(el('h2','','Your test result'));
 qb.appendChild(el('div','big',sc+' / '+TOT+'  ('+pc+'%)'));
@@ -713,6 +773,7 @@ if(w.f)d.appendChild(el('div','',w.f));
 var ma=el('div','','Model answer: '+w.q.a);ma.style.color='var(--mut)';d.appendChild(ma);
 qb.appendChild(d);
 });
+qb.appendChild(actBtns(function(){return shT;},'My Teacher - Test result'));
 var n=el('button','','New test');n.onclick=qTest;qb.appendChild(n);
 var c=el('button','s','Back to text');c.onclick=qClose;qb.appendChild(c);
 }
@@ -729,6 +790,204 @@ if(left<=0){clearInterval(tmr);tmr=null;submit();}
 }
 $('bask').onclick=function(){stop();qOpen('ask','Ask');qAsk();};
 $('btst').onclick=function(){stop();qOpen('test','Test');qTest();};
+/* ---- Storage helpers ---- */
+function lsGet(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
+function addHist(kind,sc,tot,weak){
+var h=lsGet('tr_hist',[]);
+h.push({d:Date.now(),k:kind,s:sc,t:tot,p:Math.round(sc*100/tot)});
+lsSet('tr_hist',h.slice(-100));
+if(weak&&weak.length){
+var w=lsGet('tr_weak',[]);
+weak.forEach(function(x){if(!x||!x.q)return;if(!w.some(function(z){return z.q===x.q;}))w.push({q:x.q,a:x.a||''});});
+lsSet('tr_weak',w.slice(-60));
+}
+}
+/* ---- Share / PDF ---- */
+function shareTxt(t){
+if(navigator.share){navigator.share({title:'My Teacher',text:t}).catch(function(){});}
+else{window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');}
+}
+function actBtns(getT,ttl){
+var r=el('div','row2'),a=el('button','s','\uD83D\uDCE4 Share'),b=el('button','s','\uD83D\uDDA8 Save as PDF');
+a.onclick=function(){shareTxt(getT());};
+b.onclick=function(){var o=document.title;document.title=ttl||'My Teacher';window.print();setTimeout(function(){document.title=o;},1500);};
+r.appendChild(a);r.appendChild(b);return r;
+}
+/* ---- Listen to an answer ---- */
+function qSpeakStop(){
+ttsId++;
+try{S.cancel();}catch(e){}
+if(ttsAu){try{ttsAu.onended=ttsAu.onerror=null;ttsAu.pause();}catch(e){}ttsAu=null;}
+if(ttsBtn){ttsBtn.textContent='\uD83D\uDD0A Listen';ttsBtn=null;}
+if(arec){try{arec.abort();}catch(e){}arec=null;}
+}
+function speakAns(txt,btn){
+if(ttsBtn===btn){qSpeakStop();return;}
+qSpeakStop();
+ttsBtn=btn;btn.textContent='\u23F9 Stop';
+var my=ttsId,L=curLang(),ar=/[\u0600-\u06FF]/.test(txt),lang=L?L.sc:(ar?'ur-PK':'en-US'),pre=L?preOf(L):(ar?/^ur/i:/^en/i);
+function fin(){if(my===ttsId&&ttsBtn===btn){btn.textContent='\uD83D\uDD0A Listen';ttsBtn=null;}}
+var vs=S.getVoices(),v=vs.filter(function(x){return pre.test(x.lang);})[0];
+if(v){
+var u=new SpeechSynthesisUtterance(txt);u.voice=v;u.lang=v.lang;u.rate=+rt.value||1;
+u.onend=fin;u.onerror=fin;S.speak(u);return;
+}
+var code=L?(L.tl==='he'?'iw':L.tl):(ar?'ur':'en'),parts=[];
+(txt.replace(/\s+/g,' ').match(/[^.!?\u06D4\u061F\u0964]+[.!?\u06D4\u061F\u0964]*/g)||[txt]).forEach(function(x){
+x=x.trim();
+while(x.length>180){var cut=x.lastIndexOf(' ',170);if(cut<=0)cut=170;parts.push(x.slice(0,cut));x=x.slice(cut).trim();}
+if(x)parts.push(x);
+});
+function nx(i){
+if(my!==ttsId)return;
+if(i>=parts.length){fin();return;}
+var a=new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl='+code+'&q='+encodeURIComponent(parts[i]));
+a.playbackRate=+rt.value||1;ttsAu=a;
+a.onended=function(){nx(i+1);};a.onerror=fin;
+var p=a.play();if(p&&p.catch)p.catch(fin);
+}
+nx(0);
+}
+/* ---- Flashcards ---- */
+function qCards(){
+qb.innerHTML='';qb.dir='auto';qb.scrollTop=0;
+var src=T.value.trim(),deck=lsGet('tr_deck',[]),weak=lsGet('tr_weak',[]);
+qb.appendChild(el('h2','','Flashcards'));
+if(!src&&!deck.length&&!weak.length){noSrc();return;}
+var st=el('div','m','');st.style.marginTop='.8rem';
+if(src){
+qb.appendChild(el('div','qf','Text: '+src.slice(0,140).replace(/\s+/g,' ')+(src.length>140?'...':'')));
+qb.appendChild(el('label','','How many cards?'));
+var nS=selBox([['10','10 cards'],['15','15 cards'],['20','20 cards']],'10');qb.appendChild(nS);
+var go=el('button','','Make flashcards');
+go.onclick=function(){
+if(busy)return;
+busy=true;tgt=curLang();go.disabled=true;
+st.textContent='\u23F3 Teacher is making the cards...';
+var lang=tgt?tgt.n:'the same language as the text';
+aiText('You are a teacher making revision flashcards. Create exactly '+nS.value+' flashcards from the text. Write in '+lang+'. Each card has a short front (a question, term or key idea) and a clear back (the answer in 1 or 2 sentences). Return ONLY a JSON array with no markdown, like [{"f":"front","b":"back"}].',src.slice(0,6000),120000)
+.then(function(x){
+var cs=jparse(x,'[',']').filter(function(c){return c&&typeof c.f==='string'&&typeof c.b==='string';});
+if(!cs.length)throw 0;
+lsSet('tr_deck',cs);busy=false;runCards(cs,false);
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the cards. Check your internet and try again.';});
+};
+qb.appendChild(go);
+}
+qb.appendChild(st);
+if(deck.length){var d=el('button','s','\uD83D\uDCDA Open last deck ('+deck.length+' cards)');d.onclick=function(){runCards(deck,false);};qb.appendChild(d);}
+if(weak.length){var w=el('button','s','\uD83C\uDFAF Practice weak questions ('+weak.length+')');w.onclick=function(){runCards(weak.map(function(x){return {f:x.q,b:x.a};}),true);};qb.appendChild(w);}
+}
+function runCards(cs,weakMode){
+var i=0,known=0,missed=[];
+qb.dir=/[\u0590-\u08FF]/.test(cs[0].f)?'rtl':'ltr';
+function draw(){
+qb.innerHTML='';qb.scrollTop=0;
+if(i>=cs.length){
+qb.appendChild(el('h2','','Cards finished'));
+qb.appendChild(el('div','big',known+' / '+cs.length));
+qb.appendChild(el('div','qf',missed.length?'Practice the cards you missed until you know them all.':'Great! You knew every card.'));
+if(missed.length){var pm=el('button','','Practice missed ('+missed.length+')');pm.onclick=function(){runCards(missed.slice(),weakMode);};qb.appendChild(pm);}
+var ag=el('button','s','Start again');ag.onclick=function(){runCards(cs,weakMode);};qb.appendChild(ag);
+var nw=el('button','s','Menu');nw.onclick=qCards;qb.appendChild(nw);
+return;
+}
+var c=cs[i],flip=false;
+qb.appendChild(el('div','qh','Card '+(i+1)+' of '+cs.length+'   \u2022   Known '+known));
+var bar=el('div','bar'),fill=el('i');fill.style.width=Math.round(i*100/cs.length)+'%';bar.appendChild(fill);qb.appendChild(bar);
+var card=el('div','card',c.f);card.dir='auto';qb.appendChild(card);
+var hint=el('div','qf','Tap the card to see the answer');hint.style.textAlign='center';qb.appendChild(hint);
+var ok=el('button','','\u2705 I knew it'),no=el('button','s','\u274C Not yet');
+ok.style.display=no.style.display='none';
+card.onclick=function(){
+flip=!flip;card.textContent=flip?c.b:c.f;card.classList.toggle('bk',flip);
+hint.textContent=flip?'':'Tap the card to see the answer';
+ok.style.display=no.style.display=flip?'block':'none';
+};
+ok.onclick=function(){
+known++;
+if(weakMode){lsSet('tr_weak',lsGet('tr_weak',[]).filter(function(z){return z.q!==c.f;}));}
+i++;draw();
+};
+no.onclick=function(){missed.push(c);i++;draw();};
+qb.appendChild(ok);qb.appendChild(no);
+}
+draw();
+}
+/* ---- Progress / history ---- */
+function qHist(){
+qb.innerHTML='';qb.dir='auto';qb.scrollTop=0;
+var h=lsGet('tr_hist',[]),weak=lsGet('tr_weak',[]);
+qb.appendChild(el('h2','','My progress'));
+function av(a){return a.length?Math.round(a.reduce(function(t,x){return t+x.p;},0)/a.length):0;}
+if(!h.length){
+qb.appendChild(el('div','qf','No results yet. Take a Quiz or a Test and your scores will appear here.'));
+}else{
+qb.appendChild(el('div','big',av(h)+'%'));
+qb.appendChild(el('div','qf','Average score   \u2022   Best '+Math.max.apply(null,h.map(function(x){return x.p;}))+'%   \u2022   '+h.length+' attempts'));
+var last=h.slice(-3),prev=h.slice(-6,-3);
+if(prev.length){
+var df=av(last)-av(prev);
+qb.appendChild(el('div','m',df>0?'\uD83D\uDCC8 You are improving (+'+df+'% compared with before).':(df<0?'\uD83D\uDCC9 Your recent scores are lower ('+df+'%). Revise and try again.':'Your scores are steady.')));
+}
+h.slice(-15).reverse().forEach(function(x){
+var d=el('div','rv');
+d.appendChild(el('b','',x.k+'   \u2022   '+new Date(x.d).toLocaleDateString()));
+d.appendChild(el('div','',x.s+' / '+x.t+'  ('+x.p+'%)'));
+var bar=el('div','bar'),fill=el('i');fill.style.width=x.p+'%';bar.appendChild(fill);d.appendChild(bar);
+qb.appendChild(d);
+});
+}
+if(weak.length){var pw=el('button','','\uD83C\uDFAF Practice weak questions ('+weak.length+')');pw.onclick=function(){qOpen('cards','Flashcards');runCards(weak.map(function(z){return {f:z.q,b:z.a};}),true);};qb.appendChild(pw);}
+if(h.length||weak.length){
+var cl=el('button','s','Clear all results');
+cl.onclick=function(){if(confirm('Delete all results and weak questions?')){lsSet('tr_hist',[]);lsSet('tr_weak',[]);qHist();}};
+qb.appendChild(cl);
+}
+}
+/* ---- Summary ---- */
+function qSum(){
+qb.innerHTML='';qb.dir='auto';qb.scrollTop=0;
+var src=T.value.trim();
+qb.appendChild(el('h2','','Summary'));
+if(!src){noSrc();return;}
+qb.appendChild(el('div','qf','Text: '+src.slice(0,140).replace(/\s+/g,' ')+(src.length>140?'...':'')));
+qb.appendChild(el('label','','Style'));
+var sS=selBox([['points','Key points'],['short','Short paragraph'],['exam','Exam notes (terms and definitions)']],'points');qb.appendChild(sS);
+var go=el('button','','Make summary'),st=el('div','m',''),out=el('div','');
+st.style.marginTop='.8rem';
+go.onclick=function(){
+if(busy)return;
+busy=true;tgt=curLang();go.disabled=true;out.innerHTML='';
+st.textContent='\u23F3 Teacher is writing the summary...';
+var lang=tgt?tgt.n:'the same language as the text',how={
+points:'Write the summary as 6 to 10 short key points. Start each point with "- ".',
+short:'Write a short summary in one or two paragraphs (about 100 words).',
+exam:'Write exam revision notes: first a list of important terms, each as "- Term: short meaning", then 3 to 5 key facts to remember, each starting with "- ".'
+}[sS.value];
+aiText('You are a teacher summarising a text for a student. '+how+' Write in '+lang+'. Plain text only: no markdown symbols such as * or # or backticks, and no emojis.',src.slice(0,8000),90000)
+.then(function(x){
+x=x.replace(/[#*`>~|]/g,'').replace(/\n{3,}/g,'\n\n').trim();
+if(!x)throw 0;
+busy=false;go.disabled=false;st.textContent='';
+var box=el('div','rv',x);box.dir='auto';box.style.whiteSpace='pre-wrap';out.appendChild(box);
+var ut=el('button','','Use as text'),sv=el('button','s','\uD83D\uDCBE Save to Notes');
+ut.onclick=function(){T.value=x;qClose();msg.textContent='\u2705 Summary is now in the text box.';};
+sv.onclick=function(){
+var sub=askSub(lastSub());if(sub===null)return;
+st.textContent=saveNote('Summary: '+src.split('\n')[0],x,sub)?'\u2705 Saved to Notes ('+sub+').':'\u26A0 Could not save (storage is full or blocked).';
+};
+out.appendChild(ut);out.appendChild(sv);
+out.appendChild(actBtns(function(){return 'My Teacher - Summary\n\n'+x;},'My Teacher - Summary'));
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the summary. Check your internet and try again.';});
+};
+qb.appendChild(go);qb.appendChild(st);qb.appendChild(out);
+}
+$('bcd').onclick=function(){stop();qOpen('cards','Flashcards');qCards();};
+$('bhs').onclick=function(){stop();qOpen('progress','Progress');qHist();};
+$('bsm').onclick=function(){stop();qOpen('summary','Summary');qSum();};
+
 
 $('pause').onclick=function(){
 if(onl&&au&&!paused){au.pause();paused=true;unwake();talk(false);}
