@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Text Reader</title>
+<title>My Teacher</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0f766e">
 <link rel="icon" href="icon-192.png">
@@ -77,7 +77,7 @@ button.s{background:var(--bd);color:var(--tx)}
 </head>
 <body>
 <div class="w">
-<h1>Text Reader</h1>
+<h1>My Teacher</h1>
 <div class="c">
 <div class="m" id="msg"></div>
 <div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button><button class="s" id="bask">💬 Ask</button><button class="s" id="btst">📝 Test</button></div>
@@ -217,7 +217,7 @@ if(pr&&pr.catch)pr.catch(function(e){if(my===sid&&au===a&&e&&e.name==='NotAllowe
 }
 play(0,0);
 }
-var pe=[],pa=-1,ua=0;
+var pe=[],pa=-1,ua=0,lp=0,rp=0;
 function keep(k){
 if(Date.now()<ua)return;
 var kr=k.getBoundingClientRect(),vr=V.getBoundingClientRect();
@@ -230,7 +230,7 @@ V.innerHTML='';pe=[];pa=-1;
 paras.forEach(function(q){var d=document.createElement('div');d.className='p';d.setAttribute('data-s',q.s);d.textContent=orig_.slice(q.s,q.e);V.appendChild(d);pe.push(d);});
 }
 function render(pos,len){
-var n=-1,j;
+lp=pos;var n=-1,j;
 for(j=0;j<paras.length;j++){if(pos>=paras[j].s&&pos<paras[j].e){n=j;break;}}
 if(n<0){for(j=0;j<paras.length;j++){if(paras[j].s>=pos){n=j;break;}}}
 if(n<0)return;
@@ -365,7 +365,7 @@ return aiText(sys,o.slice(0,6000),60000).then(function(x){x=x.replace(/[#*_`>~|]
 }
 $('play').onclick=function(){
 if(micOn&&rec){rec.stop();}
-if(paused){if(onl&&au){au.play();paused=false;wake();talk(true);return;}S.resume();paused=false;wake();talk(true);if(!bc&&est.w.length)step(est.k);return;}
+if(paused){if(onl&&au){au.play();paused=false;wake();talk(true);return;}paused=false;run(mode(),0,rp);return;}
 var o=T.value.trim();if(!o||busy)return;
 window.scrollTo(0,0);
 tgt=curLang();
@@ -732,7 +732,7 @@ $('btst').onclick=function(){stop();qOpen('test','Test');qTest();};
 
 $('pause').onclick=function(){
 if(onl&&au&&!paused){au.pause();paused=true;unwake();talk(false);}
-else if(S.speaking&&!paused){S.pause();paused=true;pf=true;clr();unwake();talk(false);}
+else if(S.speaking&&!paused){rp=lp;sid++;clr();S.cancel();paused=true;pf=true;unwake();talk(false);msg.textContent='\u23F8 Paused. Tap Play to continue.';}
 };
 function stop(){sid++;clr();stopOnline();S.cancel();paused=false;unwake();talk(false);show(false);msg.textContent='';}
 $('stop').onclick=stop;
