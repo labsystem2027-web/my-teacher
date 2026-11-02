@@ -87,9 +87,32 @@ body{background:#fff!important;color:#000!important;padding:0!important}
 #qzb .rv{background:#fff!important;border-color:#999!important;break-inside:avoid}
 #qzb .big{color:#000!important}
 }
+#lk{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:1.5rem}
+#lk .lkc{width:100%;max-width:22rem;text-align:center}
+#lk .lki{font-size:3.5rem}
+#lk h1{margin:.3rem 0;font-size:1.6rem;color:var(--ac)}
+#lk p{margin:.2rem 0 1rem;color:var(--mut)}
+#lk input{width:100%;box-sizing:border-box;font-size:1.4rem;text-align:center;letter-spacing:.3rem;padding:.8rem;border:2px solid var(--bd);border-radius:.8rem;background:var(--card);color:var(--tx)}
+#lk button{width:100%;margin-top:.8rem;padding:.9rem;font-size:1.1rem;border:0;border-radius:.8rem;background:var(--ac);color:#fff}
+#lk #lke{color:#dc2626;margin-top:.8rem;min-height:1.2rem}
 </style>
 </head>
 <body>
+<div id="lk"><div class="lkc"><div class="lki">🎓</div><h1>My Teacher</h1><p>Enter password</p><input id="lkp" type="password" inputmode="numeric" autocomplete="off" placeholder="Password"><button id="lkb" type="button">Open</button><div id="lke"></div></div></div>
+<script>(function(){
+var PW='113322',lk=document.getElementById('lk'),inp=document.getElementById('lkp'),er=document.getElementById('lke');
+function ok(){try{return sessionStorage.getItem('tr_ok')==='1';}catch(e){return false;}}
+function open(){lk.style.display='none';document.body.style.overflow='';}
+if(ok()){open();return;}
+document.body.style.overflow='hidden';
+function go(){
+if(inp.value===PW){try{sessionStorage.setItem('tr_ok','1');}catch(e){}open();}
+else{er.textContent='Wrong password. Try again.';inp.value='';inp.focus();}
+}
+document.getElementById('lkb').onclick=go;
+inp.onkeydown=function(e){if(e.key==='Enter')go();};
+setTimeout(function(){try{inp.focus();}catch(e){}},200);
+})();</script>
 <div class="w">
 <h1>My Teacher</h1>
 <div class="c">
