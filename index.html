@@ -117,7 +117,7 @@ setTimeout(function(){try{inp.focus();}catch(e){}},200);
 <h1>My Teacher</h1>
 <div class="c">
 <div class="m" id="msg"></div>
-<div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button><button class="s" id="bask">💬 Ask</button><button class="s" id="btst">📝 Test</button><button class="s" id="bcd">🗂 Cards</button><button class="s" id="bhs">📊 Progress</button><button class="s" id="bsm">📄 Summary</button></div>
+<div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button><button class="s" id="bask">💬 Ask</button><button class="s" id="btst">📝 Test</button><button class="s" id="bcd">🗂 Cards</button><button class="s" id="bhs">📊 Progress</button><button class="s" id="bsm">📄 Summary</button><button class="s" id="bspp">🔤 Practice</button><button class="s" id="btk">🗣 Talk</button><button class="s" id="bky">🔑 AI key</button></div>
 <input type="file" id="pdf" accept="application/pdf,.pdf" hidden>
 <div id="tw"><textarea id="t" placeholder="Paste or type text here..."></textarea><div class="tbtn"><button id="bpdf" type="button" aria-label="PDF" title="Add text from a PDF">📄</button><button id="bmc" type="button" aria-label="Mic: speak to type" title="Speak to type">🎤</button></div></div>
 <div id="view"></div>
@@ -422,7 +422,7 @@ var job;
 if(tc){msg.textContent='\u23F3 Teacher is preparing the lecture...';job=teach(o,tgt);}
 else{msg.textContent='\u23F3 Translating to '+tgt.n+'...';job=tr(o.replace(/[#*_`>~|]/g,' '),tgt.tl);}
 job.then(function(t){busy=false;cache[key]=t;go(t);})
-.catch(function(){busy=false;msg.textContent=tc?'\u26A0 Teacher could not respond. Check your internet and try again.':'\u26A0 Translation failed. Check your internet and try again.';});
+.catch(function(){busy=false;msg.textContent=tc?'\u26A0 Teacher could not respond. Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.':'\u26A0 Translation failed. Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.';});
 };
 var PROXY='PASTE_WORKER_URL_HERE';
 function getCode(){try{return localStorage.getItem('tr_cc')||'';}catch(e){return '';}}
@@ -557,7 +557,7 @@ if(!r.txt.trim()){msg.textContent='\u26A0 This PDF has no selectable text (it ma
 closePanel();
 T.value=(T.value.trim()?T.value.trim()+'\n\n':'')+r.txt.slice(0,60000);
 msg.textContent='\u2705 PDF text added'+(r.n>r.used?' (first '+r.used+' pages only)':'')+'.';
-}).catch(function(e){busy=false;msg.textContent='\u26A0 Could not read the PDF. '+(typeof e==='string'?e:'Check your internet and try again.');});
+}).catch(function(e){busy=false;msg.textContent='\u26A0 Could not read the PDF. '+(typeof e==='string'?e:'Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.');});
 };
 /* Mic typing */
 var rec=null,micOn=false;
@@ -611,7 +611,7 @@ aiText('You are a teacher making a quiz. Create exactly '+nS.value+' multiple-ch
 var a=x.indexOf('['),b=x.lastIndexOf(']'),qs=JSON.parse(x.slice(a,b+1)).filter(function(q){return q&&typeof q.q==='string'&&Array.isArray(q.o)&&q.o.length>1&&Number.isInteger(q.a)&&q.a>=0&&q.a<q.o.length;});
 if(!qs.length)throw 0;
 busy=false;runQuiz(qs);
-}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the quiz. Check your internet and try again.';});
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the quiz. Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.';});
 };
 qb.appendChild(go);qb.appendChild(st);
 }
@@ -694,7 +694,7 @@ var a=el('div','',x);a.style.whiteSpace='pre-wrap';a.style.marginTop='.4rem';d.a
 var sp=el('button','s','\uD83D\uDD0A Listen');sp.onclick=function(){speakAns(x,sp);};d.appendChild(sp);
 lst.insertBefore(d,lst.firstChild);
 inp.value='';st.textContent='';busy=false;go.disabled=false;
-}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not get an answer. Check your internet and try again.';});
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not get an answer. Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.';});
 }
 go.onclick=ask;
 inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();ask();}};
@@ -740,7 +740,7 @@ aiText('You are a teacher setting a written exam. Create exactly '+nS.value+' sh
 var qs=jparse(x,'[',']').filter(function(q){return q&&typeof q.q==='string'&&typeof q.a==='string';});
 if(!qs.length)throw 0;
 busy=false;runTest(qs,+tS.value);
-}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the test. Check your internet and try again.';});
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the test. Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.';});
 };
 qb.appendChild(go);qb.appendChild(st);
 }
@@ -894,7 +894,7 @@ aiText('You are a teacher making revision flashcards. Create exactly '+nS.value+
 var cs=jparse(x,'[',']').filter(function(c){return c&&typeof c.f==='string'&&typeof c.b==='string';});
 if(!cs.length)throw 0;
 lsSet('tr_deck',cs);busy=false;runCards(cs,false);
-}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the cards. Check your internet and try again.';});
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the cards. Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.';});
 };
 qb.appendChild(go);
 }
@@ -1003,13 +1003,227 @@ st.textContent=saveNote('Summary: '+src.split('\n')[0],x,sub)?'\u2705 Saved to N
 };
 out.appendChild(ut);out.appendChild(sv);
 out.appendChild(actBtns(function(){return 'My Teacher - Summary\n\n'+x;},'My Teacher - Summary'));
-}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the summary. Check your internet and try again.';});
+}).catch(function(){busy=false;go.disabled=false;st.textContent='\u26A0 Could not make the summary. Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.';});
 };
 qb.appendChild(go);qb.appendChild(st);qb.appendChild(out);
 }
 $('bcd').onclick=function(){stop();qOpen('cards','Flashcards');qCards();};
 $('bhs').onclick=function(){stop();qOpen('progress','Progress');qHist();};
 $('bsm').onclick=function(){stop();qOpen('summary','Summary');qSum();};
+function qKey(){
+qb.innerHTML='';qb.dir='ltr';qb.scrollTop=0;
+qb.appendChild(el('h2','','AI key (Gemini)'));
+var t=el('div','qf','Quiz, Ask, Test, Cards and Summary need an AI key. Get a free one:\n1. Open aistudio.google.com/apikey\n2. Sign in with Google and tap Create API key\n3. Copy the key and paste it below');
+t.style.whiteSpace='pre-wrap';qb.appendChild(t);
+var inp=document.createElement('input');inp.type='text';inp.placeholder='Paste the key here (starts with AIza...)';inp.value=getKey();inp.autocapitalize='off';inp.autocomplete='off';inp.spellcheck=false;
+var sv=el('button','','Save and test'),rm=el('button','s','Remove key'),st=el('div','m','');
+st.style.marginTop='.8rem';
+sv.onclick=function(){
+var k=inp.value.trim();
+if(!k){st.textContent='Paste the key first.';return;}
+try{localStorage.setItem('tr_gk',k);}catch(e){st.textContent='\u26A0 Could not save the key.';return;}
+st.textContent='\u23F3 Testing the key...';sv.disabled=true;
+gkCall({contents:[{role:'user',parts:[{text:'Reply with the word OK'}]}]})
+.then(function(){sv.disabled=false;st.textContent='\u2705 The key works. Quiz, Ask, Test, Cards and Summary are ready.';})
+.catch(function(e){sv.disabled=false;st.textContent='\u26A0 The key did not work ('+e+'). Copy the whole key again and check your internet.';});
+};
+rm.onclick=function(){try{localStorage.removeItem('tr_gk');}catch(e){}inp.value='';st.textContent='Key removed.';};
+qb.appendChild(inp);qb.appendChild(sv);qb.appendChild(rm);qb.appendChild(st);
+}
+$('bky').onclick=function(){stop();qOpen('key','AI key');qKey();};
+/* ---- Spelling practice ---- */
+function sayWord(w){
+qSpeakStop();
+var L=curLang(),ar=/[\u0600-\u06FF]/.test(w),lang=L?L.sc:(ar?'ur-PK':'en-US'),pre=L?preOf(L):(ar?/^ur/i:/^en/i);
+var vs=S.getVoices(),v=vs.filter(function(x){return pre.test(x.lang);})[0],my=ttsId;
+function online(){
+var code=L?(L.tl==='he'?'iw':L.tl):(ar?'ur':'en');
+var a=new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl='+code+'&q='+encodeURIComponent(w));
+a.playbackRate=Math.min(1,+rt.value||1);ttsAu=a;
+var p=a.play();if(p&&p.catch)p.catch(function(){});
+}
+if(v){var u=new SpeechSynthesisUtterance(w);u.voice=v;u.lang=v.lang;u.rate=Math.min(0.9,+rt.value||0.9);u.onerror=function(){if(my===ttsId)online();};S.speak(u);}
+else online();
+}
+function qSpellPrac(){
+qb.innerHTML='';qb.dir='auto';qb.scrollTop=0;
+var src=T.value.trim(),miss=lsGet('tr_sw',[]);
+qb.appendChild(el('h2','','Spelling practice'));
+if(!src&&!miss.length){noSrc();return;}
+var st=el('div','m','');st.style.marginTop='.8rem';
+if(src){
+qb.appendChild(el('div','qf','App word bolay ga, aap sahi spelling type karein. Words aap ke text se liye jate hain.'));
+qb.appendChild(el('label','','How many words?'));
+var nS=selBox([['5','5 words'],['10','10 words'],['15','15 words'],['20','20 words']],'10');qb.appendChild(nS);
+qb.appendChild(el('label','','Level'));
+var lS=selBox([['any','Any'],['easy','Easy (short words)'],['medium','Medium'],['hard','Hard (long words)']],'any');qb.appendChild(lS);
+var go=el('button','','Start practice');
+go.onclick=function(){
+var ws=src.match(/[\p{L}\p{M}]{4,}/gu)||[],seen={},u=[];
+ws.forEach(function(w){var k=w.toLowerCase();if(!seen[k]){seen[k]=1;u.push(k);}});
+var f={any:function(){return true;},easy:function(w){return w.length<=6;},medium:function(w){return w.length>=6&&w.length<=9;},hard:function(w){return w.length>=8;}}[lS.value];
+var pool=u.filter(f);if(pool.length<3)pool=u;
+if(!pool.length){st.textContent='\u26A0 Text mein practice ke liye words nahi mile (kam az kam 4 letters).';return;}
+for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=pool[i];pool[i]=pool[j];pool[j]=t;}
+runSpellPrac(pool.slice(0,+nS.value),false);
+};
+qb.appendChild(go);
+}
+qb.appendChild(st);
+if(miss.length){var pm=el('button','s','\uD83C\uDFAF Practice my mistakes ('+miss.length+' words)');pm.onclick=function(){runSpellPrac(miss.slice(0,20),true);};qb.appendChild(pm);}
+}
+function runSpellPrac(words,fromMiss){
+var i=0,ok=0,wrong=[];
+qb.dir=/[\u0590-\u08FF]/.test(words[0])?'rtl':'ltr';
+function draw(){
+qSpeakStop();qb.innerHTML='';qb.scrollTop=0;
+if(i>=words.length){
+var pc=Math.round(ok*100/words.length);
+addHist('Spelling',ok,words.length,null);
+qb.appendChild(el('h2','','Practice finished'));
+qb.appendChild(el('div','big',ok+' / '+words.length+'  ('+pc+'%)'));
+qb.appendChild(el('div','qf',pc>=80?'Excellent spelling!':(pc>=50?'Achha hai. Ghalat words dobara practice karein.':'Aur practice karein, aap behtar ho jayenge.')));
+if(wrong.length){
+qb.appendChild(el('h2','','Words to remember'));
+wrong.forEach(function(w){var d=el('div','rv');d.dir='auto';d.appendChild(el('b','',w.c));d.appendChild(el('div','','Your answer: '+(w.y||'(empty)')));qb.appendChild(d);});
+var pw=el('button','','Practice missed ('+wrong.length+')');pw.onclick=function(){runSpellPrac(wrong.map(function(w){return w.c;}),true);};qb.appendChild(pw);
+}
+var ag=el('button','s','New practice');ag.onclick=qSpellPrac;qb.appendChild(ag);
+var c=el('button','s','Back to text');c.onclick=qClose;qb.appendChild(c);
+return;
+}
+var w=words[i],done=false;
+qb.appendChild(el('div','qh','Word '+(i+1)+' of '+words.length+'   \u2022   Correct '+ok));
+var bar=el('div','bar'),fill=el('i');fill.style.width=Math.round(i*100/words.length)+'%';bar.appendChild(fill);qb.appendChild(bar);
+var hear=el('button','','\uD83D\uDD0A Hear the word');hear.onclick=function(){sayWord(w);};qb.appendChild(hear);
+var inp=document.createElement('input');inp.type='text';inp.placeholder='Type the spelling...';inp.autocapitalize='off';inp.autocomplete='off';inp.spellcheck=false;inp.dir='auto';
+qb.appendChild(inp);
+var fb=el('div','qf',''),hint=el('button','s','\uD83D\uDCA1 Hint'),chk=el('button','','Check'),skip=el('button','s','Skip'),nx=el('button','',i===words.length-1?'See result':'Next');
+nx.style.display='none';nx.onclick=function(){i++;draw();};
+hint.onclick=function(){fb.textContent='Hint: '+w.charAt(0)+' '+new Array(w.length).join('_ ').trim()+'  ('+w.length+' letters)';};
+function fin(good,y){
+if(done)return;done=true;
+inp.disabled=chk.disabled=hint.disabled=skip.disabled=true;
+if(good){ok++;fb.textContent='\u2705 Correct! '+w;
+if(fromMiss)lsSet('tr_sw',lsGet('tr_sw',[]).filter(function(z){return z!==w;}));}
+else{wrong.push({c:w,y:y});fb.textContent='\u274C Correct spelling: '+w+(y?'   (you wrote: '+y+')':'');
+var m=lsGet('tr_sw',[]);if(m.indexOf(w)<0){m.push(w);lsSet('tr_sw',m.slice(-60));}}
+nx.style.display='block';nx.scrollIntoView({block:'nearest'});
+}
+chk.onclick=function(){var y=inp.value.trim();if(!y){fb.textContent='Pehle spelling type karein.';return;}fin(y.toLowerCase()===w.toLowerCase(),y);};
+skip.onclick=function(){fin(false,'');};
+inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();chk.onclick();}};
+qb.appendChild(chk);qb.appendChild(hint);qb.appendChild(skip);qb.appendChild(fb);qb.appendChild(nx);
+setTimeout(function(){sayWord(w);try{inp.focus();}catch(e){}},250);
+}
+draw();
+}
+$('bspp').onclick=function(){stop();qOpen('spellprac','Spelling practice');qSpellPrac();};
+/* ---- English talk partner ---- */
+function sayEn(txt){
+qSpeakStop();
+var my=ttsId,vs=S.getVoices(),v=vs.filter(function(x){return /^en/i.test(x.lang);})[0];
+if(v){var u=new SpeechSynthesisUtterance(txt);u.voice=v;u.lang=v.lang;u.rate=Math.min(1,+rt.value||1);S.speak(u);return;}
+var parts=[];
+(txt.replace(/\s+/g,' ').match(/[^.!?]+[.!?]*/g)||[txt]).forEach(function(x){
+x=x.trim();
+while(x.length>180){var cut=x.lastIndexOf(' ',170);if(cut<=0)cut=170;parts.push(x.slice(0,cut));x=x.slice(cut).trim();}
+if(x)parts.push(x);
+});
+function nx(i){
+if(my!==ttsId||i>=parts.length)return;
+var a=new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q='+encodeURIComponent(parts[i]));
+a.playbackRate=Math.min(1,+rt.value||1);ttsAu=a;
+a.onended=function(){nx(i+1);};
+var p=a.play();if(p&&p.catch)p.catch(function(){});
+}
+nx(0);
+}
+function qTalk(){
+qb.innerHTML='';qb.dir='ltr';qb.scrollTop=0;
+qb.appendChild(el('h2','','English Talk'));
+qb.appendChild(el('div','qf','Teacher se English ma bat chet karein. Aap type kar sakte hain ya mic se bol sakte hain. Ghalti ho to Teacher sahi sentence bata dega.'));
+qb.appendChild(el('label','','Level'));
+var lv=selBox([['beginner','Beginner (very simple)'],['intermediate','Intermediate'],['advanced','Advanced']],'beginner');qb.appendChild(lv);
+qb.appendChild(el('label','','Topic'));
+var tp=selBox([['anything','Free talk'],['introducing myself','Introduce myself'],['daily life and routine','Daily life'],['shopping in a market','Shopping'],['visiting a doctor','Doctor visit'],['a job interview','Job interview'],['travelling','Travel'],['school and study','School and study']],'anything');qb.appendChild(tp);
+var ac=document.createElement('label');ac.className='tc';var cb=document.createElement('input');cb.type='checkbox';cb.checked=true;ac.appendChild(cb);ac.appendChild(document.createTextNode('Teacher ka jawab awaz ma sunao'));qb.appendChild(ac);
+var st=el('div','m',''),lst=el('div',''),go=el('button','','Start new chat');
+st.style.marginTop='.8rem';
+var hist=[],sending=false;
+var inp=document.createElement('input');inp.type='text';inp.placeholder='Type in English...';inp.autocapitalize='off';inp.autocomplete='off';inp.spellcheck=false;inp.dir='ltr';
+var snd=el('button','','Send'),mic=el('button','s','🎤 Speak English');
+var box=el('div','');box.style.display='none';
+box.appendChild(inp);box.appendChild(snd);box.appendChild(mic);
+function addMsg(who,text,tip){
+var d=el('div','rv');d.dir='ltr';
+var b=el('b','',who);d.appendChild(b);
+var t=el('div','',text);t.style.whiteSpace='pre-wrap';t.style.marginTop='.3rem';d.appendChild(t);
+if(who==='Teacher'){
+var sp=el('button','s','🔊 Listen');sp.onclick=function(){sayEn(text);};d.appendChild(sp);
+}
+if(tip){var n=el('div','',tip);n.style.marginTop='.5rem';n.style.padding='.5rem';n.style.borderRadius='.4rem';n.style.background='var(--hp)';n.style.whiteSpace='pre-wrap';n.dir='auto';d.appendChild(n);}
+lst.insertBefore(d,lst.firstChild);
+}
+function turn(userText){
+if(sending)return;
+sending=true;snd.disabled=true;mic.disabled=true;go.disabled=true;
+st.textContent='⏳ Teacher is thinking...';
+var convo=hist.map(function(h){return h.r+': '+h.t;}).join('\n');
+var sys='You are a friendly English speaking partner for a Pakistani student. Student level: '+lv.value+'. Topic: '+tp.value+'. Reply in simple natural English that matches the level, in 1 to 3 short sentences, and end with one easy follow-up question. If the student\'s last message has grammar, word or sentence mistakes, then after your reply write a line containing exactly ###TIP### followed by "Better: " and the corrected sentence, then one short line explaining the mistake in simple Roman Urdu. If the last message has no mistakes, write ###TIP### followed by GOOD. If there is no student message yet, just greet and ask the first question, and write ###TIP### GOOD. Plain text only: no markdown, no emojis.';
+var usr='Conversation so far:\n'+(convo||'(none)')+'\n\n'+(userText?'Student\'s new message: '+userText:'Start the conversation now.');
+aiText(sys,usr,90000).then(function(x){
+var pt=x.split('###TIP###'),rep=pt[0].replace(/[#*_`>~|]/g,' ').replace(/\n{3,}/g,'\n\n').trim(),tip=(pt[1]||'').replace(/[#*_`>~|]/g,'').trim();
+if(!rep)throw 0;
+if(/^good\b/i.test(tip)||!tip)tip='✅ Aap ka sentence sahi tha!';
+if(!userText)tip='';
+hist.push({r:'Teacher',t:rep});
+addMsg('Teacher',rep,tip);
+st.textContent='';sending=false;snd.disabled=false;mic.disabled=false;go.disabled=false;
+if(cb.checked)sayEn(rep);
+}).catch(function(){
+sending=false;snd.disabled=false;mic.disabled=false;go.disabled=false;
+if(userText)hist.pop();
+st.textContent='⚠ Jawab nahi mila. Internet check karein aur dobara Send karein. Agar masla rahe to 🔑 AI key button se free key lagayen.';
+if(userText)inp.value=userText;
+});
+}
+function send(){
+var t=inp.value.trim();
+if(!t||sending)return;
+qSpeakStop();
+hist.push({r:'Student',t:t});
+addMsg('You',t,'');
+inp.value='';
+turn(t);
+}
+snd.onclick=send;
+inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();send();}};
+mic.onclick=function(){
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SR){st.textContent='⚠ Mic is not supported in this browser. Please use Chrome.';return;}
+if(arec){try{arec.stop();}catch(e){}return;}
+qSpeakStop();
+var r=new SR(),got='';arec=r;r.lang='en-US';r.continuous=false;r.interimResults=true;
+r.onstart=function(){mic.textContent='⏹ Listening... tap to stop';st.textContent='🎤 Speak English now...';};
+r.onresult=function(e){got='';for(var i=0;i<e.results.length;i++)got+=e.results[i][0].transcript;inp.value=got;};
+r.onerror=function(e){var m={'not-allowed':'Mic permission is blocked. Allow the microphone for this app.','service-not-allowed':'Mic permission is blocked. Allow the microphone for this app.','no-speech':'No speech heard. Try again closer to the mic.','network':'Mic needs internet.','audio-capture':'No microphone found.'};if(e.error!=='aborted')st.textContent='⚠ '+(m[e.error]||('Mic error: '+e.error));};
+r.onend=function(){arec=null;mic.textContent='🎤 Speak English';if(got&&inp.value.trim()&&!sending){st.textContent='';send();}};
+try{r.start();}catch(x){arec=null;}
+};
+go.onclick=function(){
+if(sending)return;
+hist=[];lst.innerHTML='';box.style.display='block';go.textContent='Start new chat';
+turn('');
+};
+qb.appendChild(go);qb.appendChild(st);qb.appendChild(box);qb.appendChild(lst);
+}
+$('btk').onclick=function(){stop();qOpen('talk','English Talk');qTalk();};
+
+
+
+
+
 
 
 $('pause').onclick=function(){
