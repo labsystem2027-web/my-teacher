@@ -27,6 +27,11 @@ mark{background:var(--hl);color:#111;font-weight:700;border-radius:.25rem;paddin
 #tw{position:relative;flex:1 1 0;min-height:10rem;display:flex}
 #tw textarea{flex:1;min-height:0;padding-bottom:3.8rem}
 .tbtn{position:absolute;right:.6rem;bottom:.6rem;display:flex;gap:.4rem}.tbtn button{width:2.8rem;height:2.8rem;min-width:0;flex:none;padding:0;border-radius:50%;font-size:1.2rem;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+#bfs2{flex:none;width:3.4rem}
+#bfs2::before{content:'\26F6'}
+body.fs #bfs2::before,body.tbig #bfs2::before{content:'\2715'}
+#tw.big{position:fixed;inset:0;z-index:45;background:var(--card);padding:.7rem;padding-top:calc(.7rem + env(safe-area-inset-top,0px));padding-bottom:calc(.7rem + env(safe-area-inset-bottom,0px))}
+#tw.big textarea{font-size:1.3rem;line-height:1.8}
 #bmc.on{background:#dc2626;color:#fff}
 #pn{display:none;flex:1 1 0;min-height:10rem;overflow:auto;background:var(--bg);border:1px solid var(--bd);border-radius:.5rem;padding:.7rem;font-size:1.05rem;line-height:1.6}
 #pn button{display:block;width:100%;flex:none;margin:.4rem 0}
@@ -52,6 +57,9 @@ mark{background:var(--hl);color:#111;font-weight:700;border-radius:.25rem;paddin
 #qzb input[type=text]{width:100%;padding:.65rem;font-size:1rem;border-radius:.5rem;border:1px solid var(--bd);background:var(--bg);color:var(--tx);margin:.4rem 0}
 #qzb .big{font-size:2.4rem;font-weight:700;color:var(--ac);margin:.4rem 0}
 #qzb .rv{border:1px solid var(--bd);background:var(--card);border-radius:.5rem;padding:.7rem;margin:.5rem 0;font-size:.95rem;line-height:1.5}
+.noans .ans{display:none}
+#qzb .ans{margin-top:.4rem;color:var(--ac);font-weight:600}
+#qzb .opl{margin:.2rem 0 .2rem .6rem}
 .bar{height:.5rem;background:var(--bd);border-radius:1rem;overflow:hidden;margin:.4rem 0 .8rem}.bar i{display:block;height:100%;background:var(--ac)}
 #av{flex:none;width:4rem;height:4rem}
 #av #mo{transform-box:fill-box;transform-origin:center;transform:scaleY(.25)}
@@ -77,6 +85,10 @@ button.s{background:var(--bd);color:var(--tx)}
 #qzb .card{min-height:12rem;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.3rem;line-height:1.5;padding:1.2rem;border:2px solid var(--bd);border-radius:1rem;background:var(--card);cursor:pointer;margin:.6rem 0;white-space:pre-wrap}
 #qzb .card.bk{background:var(--hp);border-color:var(--ac)}
 #qzb select{margin-bottom:.4rem}
+body.fs{overflow:hidden}
+body.fs .c{position:fixed;inset:0;z-index:40;border-radius:0;border:0;padding:.7rem;padding-top:calc(.7rem + env(safe-area-inset-top,0px));padding-bottom:calc(.7rem + env(safe-area-inset-bottom,0px));background:var(--card)}
+body.fs .c>:not(.m):not(#view):not(.r){display:none!important}
+body.fs #view{font-size:1.3rem;line-height:1.8}
 @media print{
 body{background:#fff!important;color:#000!important;padding:0!important}
 .w{display:none!important}
@@ -86,6 +98,9 @@ body{background:#fff!important;color:#000!important;padding:0!important}
 #qzb button,#qzb .row2{display:none!important}
 #qzb .rv{background:#fff!important;border-color:#999!important;break-inside:avoid}
 #qzb .big{color:#000!important}
+#qzb .np{display:none!important}
+#qzb .ans{color:#000!important}
+#qzb h2{break-after:avoid}
 }
 #lk{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:1.5rem}
 #lk .lkc{width:100%;max-width:22rem;text-align:center}
@@ -117,9 +132,9 @@ setTimeout(function(){try{inp.focus();}catch(e){}},200);
 <h1>My Teacher</h1>
 <div class="c">
 <div class="m" id="msg"></div>
-<div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button><button class="s" id="bask">💬 Ask</button><button class="s" id="btst">📝 Test</button><button class="s" id="bcd">🗂 Cards</button><button class="s" id="bhs">📊 Progress</button><button class="s" id="bsm">📄 Summary</button><button class="s" id="bspp">🔤 Practice</button><button class="s" id="btk">🗣 Talk</button><button class="s" id="bky">🔑 AI key</button></div>
-<input type="file" id="pdf" accept="application/pdf,.pdf" hidden>
-<div id="tw"><textarea id="t" placeholder="Paste or type text here..."></textarea><div class="tbtn"><button id="bpdf" type="button" aria-label="PDF" title="Add text from a PDF">📄</button><button id="bmc" type="button" aria-label="Mic: speak to type" title="Speak to type">🎤</button></div></div>
+<div class="tools"><button class="s" id="bsv">💾 Save</button><button class="s" id="bnt">📂 Notes</button><button class="s" id="bqz">❓ Quiz</button><button class="s" id="bask">💬 Ask</button><button class="s" id="btst">📝 Test</button><button class="s" id="bcd">🗂 Cards</button><button class="s" id="bhs">📊 Progress</button><button class="s" id="bsm">📄 Summary</button><button class="s" id="bpk">📚 Study Pack</button><button class="s" id="bspp">🔤 Practice</button><button class="s" id="btk">🗣 Talk</button><button class="s" id="bky">🔑 AI key</button></div>
+<input type="file" id="pdf" hidden>
+<div id="tw"><textarea id="t" placeholder="Paste or type text here..."></textarea><div class="tbtn"><button id="bsp" type="button" aria-label="Read" title="Read selected text (or all)">🎧</button><button id="bfs" type="button" aria-label="Full screen" title="Full screen / small">⛶</button><button id="bpg" type="button" aria-label="Go to page" title="Pick a page from the uploaded PDF">📖</button><button id="bpdf" type="button" aria-label="PDF" title="Add text from a file (PDF, Word, PowerPoint, EPUB, TXT, picture)">📄</button><button id="bmc" type="button" aria-label="Mic: speak to type" title="Speak to type">🎤</button></div></div>
 <div id="view"></div>
 <div id="pn"></div>
 <label>Read in (language)</label>
@@ -135,7 +150,7 @@ setTimeout(function(){try{inp.focus();}catch(e){}},200);
 <div class="r">
 <button id="play">Play</button>
 <button id="pause" class="s">Pause</button>
-<button id="stop" class="s">Stop</button>
+<button id="stop" class="s">Stop</button><button id="bfs2" class="s" type="button" aria-label="Full / small screen"></button>
 </div>
 </div>
 </div>
@@ -181,14 +196,22 @@ fillLangs();S.onvoiceschanged=fillVoices;
 rt.oninput=function(){$('rv').textContent=(+rt.value).toFixed(1)};
 pt.oninput=function(){$('pv').textContent=(+pt.value).toFixed(1)};
 function esc(x){return x.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
-function show(on){V.style.display=on?'block':'none';TW.style.display=on?'none':'flex';pn.style.display='none';}
+function show(on){document.body.classList.toggle('fs',!!on);V.style.display=on?'block':'none';TW.style.display=on?'none':'flex';pn.style.display='none';}
 function clr(){if(tm){clearTimeout(tm);tm=null;}}
 var wl=null,wlOn=false;
-function wake(){wlOn=true;if(navigator.wakeLock&&!wl){navigator.wakeLock.request('screen').then(function(l){wl=l;l.addEventListener('release',function(){wl=null;});}).catch(function(){});}}
-function unwake(){wlOn=false;if(wl){wl.release().catch(function(){});wl=null;}}
+var nsV=null;
+function nsOn(){try{if(!nsV){nsV=document.createElement('video');nsV.setAttribute('playsinline','');nsV.setAttribute('muted','');nsV.muted=true;nsV.loop=true;nsV.style.cssText='position:fixed;width:1px;height:1px;opacity:0.01;pointer-events:none;left:0;top:0';
+var W='data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAHiEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHYTbuMU6uEElTDZ1OsggEeTbuMU6uEHFO7a1OsggHM7AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmsirXsYMPQkBNgI1MYXZmNjAuMTYuMTAwV0GNTGF2ZjYwLjE2LjEwMESJiECPQAAAAAAAFlSua8GuAQAAAAAAADjXgQFzxYhNVSpNr/7rf5yBACK1nIN1bmSIgQCGhVZfVlA4g4EBI+ODhDuaygDgibCBELqBEJqBAhJUw2f8c3OgY8CAZ8iaRaOHRU5DT0RFUkSHjUxhdmY2MC4xNi4xMDBzc9ZjwItjxYhNVSpNr/7rf2fIoUWjh0VOQ09ERVJEh5RMYXZjNjAuMzEuMTAyIGxpYnZweGfIoUWjiERVUkFUSU9ORIeTMDA6MDA6MDEuMDAwMDAwMDAwAB9DtnWo54EAo6OBAACAEAIAnQEqEAAQAABHCIWFiJmEiAICAAwNYAD+/6tQgBxTu2uRu4+zgQC3iveBAfGCAZ/wgQM=',M='data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAMTbW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAAA+gAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAj10cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAA+gAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAABAAAAAQAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAPoAAAAAAABAAAAAAG1bWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAABAAAAAQABVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAABYG1pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAASBzdGJsAAAAvHN0c2QAAAAAAAAAAQAAAKxhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAABAAEABIAAAASAAAAAAAAAABFUxhdmM2MC4zMS4xMDIgbGlieDI2NAAAAAAAAAAAAAAAGP//AAAAMmF2Y0MBZAAK/+EAF2dkAAqs2V7ARAAAAwAEAAADAAg8SJZYAQAEaO+8sP34+AAAAAAQcGFzcAAAAAEAAAABAAAAFGJ0cnQAAAAAAAAWiAAAFogAAAAYc3R0cwAAAAAAAAABAAAAAQAAQAAAAAAcc3RzYwAAAAAAAAABAAAAAQAAAAEAAAABAAAAFHN0c3oAAAAAAAAC0QAAAAEAAAAUc3RjbwAAAAAAAAABAAADQwAAAGJ1ZHRhAAAAWm1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAALWlsc3QAAAAlqXRvbwAAAB1kYXRhAAAAAQAAAABMYXZmNjAuMTYuMTAwAAAACGZyZWUAAALZbWRhdAAAArcGBf//s9xF6b3m2Ui3lizYINkj7u94MjY0IC0gY29yZSAxNjQgcjMxMDggMzFlMTlmOSAtIEguMjY0L01QRUctNCBBVkMgY29kZWMgLSBDb3B5bGVmdCAyMDAzLTIwMjMgLSBodHRwOi8vd3d3LnZpZGVvbGFuLm9yZy94MjY0Lmh0bWwgLSBvcHRpb25zOiBjYWJhYz0xIHJlZj0xIGRlYmxvY2s9MTowOjAgYW5hbHlzZT0weDM6MHgzIG1lPWhleCBzdWJtZT0yIHBzeT0xIHBzeV9yZD0xLjAwOjAuMDAgbWl4ZWRfcmVmPTAgbWVfcmFuZ2U9MTYgY2hyb21hX21lPTEgdHJlbGxpcz0wIDh4OGRjdD0xIGNxbT0wIGRlYWR6b25lPTIxLDExIGZhc3RfcHNraXA9MSBjaHJvbWFfcXBfb2Zmc2V0PTAgdGhyZWFkcz0xIGxvb2thaGVhZF90aHJlYWRzPTEgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNlZD0wIGJsdXJheV9jb21wYXQ9MCBzdGl0Y2hhYmxlPTEgY29uc3RyYWluZWRfaW50cmE9MCBiZnJhbWVzPTMgYl9weXJhbWlkPTIgYl9hZGFwdD0xIGJfYmlhcz0wIGRpcmVjdD0xIHdlaWdodGI9MSBvcGVuX2dvcD0wIHdlaWdodHA9MSBrZXlpbnQ9MjUwIGtleWludF9taW49MSBzY2VuZWN1dD00MCBpbnRyYV9yZWZyZXNoPTAgcmNfbG9va2FoZWFkPTEwIHJjPWNyZiBtYnRyZWU9MSBjcmY9MjMuMCBxY29tcD0wLjYwIHFwbWluPTAgcXBtYXg9NjkgcXBzdGVwPTQgaXBfcmF0aW89MS40MCBhcT0xOjEuMDAAgAAAABJliIQAGP/q/8JVP72zdFxF//E=';
+nsV.src=(nsV.canPlayType&&nsV.canPlayType('video/webm')?W:M);document.body.appendChild(nsV);}
+var p=nsV.play();if(p&&p.catch)p.catch(function(){});}catch(e){}}
+function nsOff(){try{if(nsV)nsV.pause();}catch(e){}}
+function wake(){wlOn=true;msOn(true);if(!navigator.wakeLock)nsOn();if(navigator.wakeLock&&!wl&&document.visibilityState==='visible'){navigator.wakeLock.request('screen').then(function(l){wl=l;l.addEventListener('release',function(){wl=null;if(wlOn&&document.visibilityState==='visible')setTimeout(wake,300);});}).catch(function(){setTimeout(function(){if(wlOn&&!wl)wake();},2000);});}}
+function msOn(on){if(!('mediaSession' in navigator))return;try{if(on){navigator.mediaSession.metadata=new MediaMetadata({title:'My Teacher',artist:'Reading'});navigator.mediaSession.playbackState='playing';navigator.mediaSession.setActionHandler('pause',function(){var b=$('pause');if(b)b.click();});navigator.mediaSession.setActionHandler('play',function(){var b=$('play');if(b)b.click();});navigator.mediaSession.setActionHandler('stop',function(){var b=$('stop');if(b)b.click();});}else{navigator.mediaSession.playbackState='none';}}catch(e){}}
+document.addEventListener('touchstart',function(){if(wlOn&&!wl)wake();},{passive:true});
+function unwake(){wlOn=false;msOn(false);nsOff();if(wl){wl.release().catch(function(){});wl=null;}}
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&wlOn)wake();});
 function talk(on){var a=$('av');if(a)a.classList.toggle('talk',!!on);}
-var au=null,onl=false,tick=null;
+var au=null,onl=false,tick=null,SA=null;
 function stopOnline(){onl=false;if(tick){clearInterval(tick);tick=null;}if(au){au.onended=au.onerror=au.onplaying=null;try{au.pause();au.removeAttribute('src');}catch(e){}au=null;}}
 function startOnline(cs,my,rate,txt){
 onl=true;
@@ -217,10 +240,14 @@ if(my!==sid)return;
 if(ix>=cs.length){
 unwake();onl=false;talk(false);
 if(pa>=0){pe[pa].className='p';pe[pa].textContent=orig_.slice(paras[pa].s,paras[pa].e);pa=-1;}
-msg.textContent='Tap any paragraph to read from there.';return;
+if(nextSec())return;msg.textContent='Tap any paragraph to read from there.';return;
 }
-var c=cs[ix],a=mkA(ix,v),ws=words(c),last=-1;
-au=a;mkA(ix+1,bv);
+var c=cs[ix],ws=words(c),last=-1;
+if(!SA)SA=new Audio();var a=SA;try{a.pause();}catch(e){}
+a.onended=a.onerror=a.onplaying=null;
+a.src=U[v](code,encodeURIComponent(txt.slice(c.s,c.e).trim()));
+a.defaultPlaybackRate=rate;a.playbackRate=rate;
+au=a;
 if(tick)clearInterval(tick);
 if(ws.length){render(ws[0].i,ws[0].l);last=0;}
 if(!fbUsed)msg.textContent='\u23F3 Loading online voice...';
@@ -346,7 +373,7 @@ if(my!==sid)return;
 clr();
 var len=c.e-c.s,a=Date.now()-t0;
 if(!bc&&!pf&&len>15&&a>200){var obs=a/len*rate;mpc1=cal?0.5*mpc1+0.5*obs:obs;cal=true;}
-if(ix===cs.length-1){unwake();talk(false);if(pa>=0){pe[pa].className='p';pe[pa].textContent=orig_.slice(paras[pa].s,paras[pa].e);pa=-1;}msg.textContent='Tap any paragraph to read from there.';}
+if(ix===cs.length-1){unwake();talk(false);if(pa>=0){pe[pa].className='p';pe[pa].textContent=orig_.slice(paras[pa].s,paras[pa].e);pa=-1;}if(!nextSec())msg.textContent='Tap any paragraph to read from there.';}
 else{var nx=cs[ix+1],m2=/\S+/.exec(orig_.slice(nx.s));render(nx.s,m2?m2[0].length:1);}
 };
 u.onerror=function(e){
@@ -366,6 +393,44 @@ if(tgt)setTimeout(function(){if(my===sid&&!started&&!paused)run('online',0,base)
 },120);
 }
 var cache={},busy=false;
+var SEC=null;
+function splitSecs(o){
+var ps=o.split('\n'),out=[],c='';
+function push(){if(c.trim())out.push(c.trim());c='';}
+ps.forEach(function(l){
+while(l.length>2500){var cut=Math.max(l.lastIndexOf('. ',2500),l.lastIndexOf('\u06D4',2500),l.lastIndexOf(' ',2500));if(cut<500)cut=2500;if(c)push();out.push(l.slice(0,cut+1).trim());l=l.slice(cut+1);}
+if((c+'\n'+l).length>2500)push();
+c+=(c?'\n':'')+l;
+});
+push();return out;
+}
+function getSec(i){
+if(!SEC||i>=SEC.parts.length)return null;
+var S0=SEC;
+if(!S0.p[i]){
+var q=S0.parts[i],k=(S0.tc?'T|':'')+S0.tl+'|'+q;
+S0.p[i]=cache[k]?Promise.resolve(cache[k]):(S0.tc?teach(q,S0.tgt):tr(q.replace(/[#*_`>~|]/g,' '),S0.tl)).then(function(t){cache[k]=t;return t;});
+S0.p[i].catch(function(){S0.p[i]=null;});
+}
+return S0.p[i];
+}
+function nextSec(){
+if(!SEC||SEC.i>=SEC.parts.length-1)return false;
+var my=sid,S0=SEC,i=++S0.i,tries=0;
+msg.textContent='\u23F3 Preparing next part ('+(i+1)+' of '+S0.parts.length+')...';
+(function att(){
+getSec(i).then(function(t){
+if(my!==sid||SEC!==S0)return;
+orig_=t;run(mode(),0,0);getSec(i+1);
+}).catch(function(){
+if(my!==sid||SEC!==S0)return;
+if(++tries<3){setTimeout(att,1500);return;}
+unwake();talk(false);
+msg.textContent='\u26A0 Next part could not be translated. Check internet, then press Play to start again.';
+});
+})();
+return true;
+}
 function ft(u,ms){
 var ac=new AbortController(),t=setTimeout(function(){ac.abort()},ms);
 return fetch(u,{signal:ac.signal}).then(function(r){clearTimeout(t);return r},function(e){clearTimeout(t);throw e});
@@ -394,16 +459,19 @@ return piece(t.q,tl).then(function(x){res[t.li][t.pi]=x;}).then(worker);
 var ws=[];for(var k=0;k<4;k++)ws.push(worker());
 return Promise.all(ws).then(function(){return res.map(function(a){return a.join(' ')}).join('\n')});
 }
-function mode(){return sel.value==='-2'?'auto':(sel.value==='-1'?'def':(sel.value==='-3'?'online':'sel'));}
+var forceOnl=false;
+function mode(){if(forceOnl)return 'online';return sel.value==='-2'?'auto':(sel.value==='-1'?'def':(sel.value==='-3'?'online':'sel'));}
 function teach(o,L){
 var lang=L?L.n:'the same language as the text';
 var sys='You are a kind, clear teacher giving a spoken lecture to a student. Explain the given text in '+lang+'. Keep the whole lecture to about 300 words. First explain the main idea simply, then go through each point with extra details, reasons, simple examples and things to remember, then finish with a short summary. Write plain spoken paragraphs only: no markdown, no headings, no bullet symbols, no emojis.';
 return aiText(sys,o.slice(0,6000),60000).then(function(x){x=x.replace(/[#*_`>~|]/g,' ').replace(/\n{3,}/g,'\n\n').trim();if(!x)throw 0;return x;});
 }
+var forceTxt=null;
 $('play').onclick=function(){
 if(micOn&&rec){rec.stop();}
 if(paused){if(onl&&au){au.play();paused=false;wake();talk(true);return;}paused=false;run(mode(),0,rp);return;}
-var o=T.value.trim();if(!o||busy)return;
+if(forceTxt===null)forceOnl=false;
+var o=(forceTxt!==null?forceTxt:T.value).trim();if(!o||busy)return;
 window.scrollTo(0,0);
 tgt=curLang();
 var tc=$('tc').checked,key=(tc?'T|':'')+(tgt?tgt.tl:'')+'|'+o;
@@ -415,7 +483,15 @@ if(vs.length&&!vs.some(function(x){return pre.test(x.lang)}))msg.textContent='No
 }
 try{run(mode(),0,0);}catch(e){busy=false;msg.textContent='\u26A0 '+(e&&e.message?e.message:'Something went wrong');}
 }
+SEC=null;
 if(!tc&&!tgt){orig_=o;run(mode(),0,0);return;}
+if(o.length>3000){
+SEC={parts:splitSecs(o),i:0,p:[],tc:tc,tl:tgt?tgt.tl:'',tgt:tgt};
+busy=true;msg.textContent='\u23F3 '+(tc?'Teacher is preparing part 1 of ':'Translating part 1 of ')+SEC.parts.length+'...';
+var S1=SEC;
+getSec(0).then(function(t){busy=false;if(SEC!==S1)return;go(t);getSec(1);}).catch(function(){busy=false;msg.textContent='\u26A0 Translation failed. Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.';});
+return;
+}
 if(cache[key]){go(cache[key]);return;}
 busy=true;
 var job;
@@ -527,37 +603,152 @@ var sc=document.createElement('script');sc.src=src;sc.onload=res;sc.onerror=func
 });
 }
 function getKey(){try{return localStorage.getItem('tr_gk')||'';}catch(e){return '';}}
-/* PDF to text */
-var PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+/* File to text (PDF, Word, PowerPoint, EPUB, text, HTML, images) */
+var PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/',MAXC=3000000,MAXP=3000;
 $('bpdf').onclick=function(){if(!busy)$('pdf').click();};
-$('pdf').onchange=function(){
-var f=this.files&&this.files[0];this.value='';
-if(!f||busy)return;
-busy=true;msg.textContent='\u23F3 Reading the PDF...';
-loadScript(PDFJS+'pdf.min.js','pdfjsLib').then(function(){
+function fdone(txt,note){
+busy=false;
+if(!txt||!txt.trim()){msg.textContent='⚠ No readable text found in this file (a scanned PDF has only pictures).';return;}
+closePanel();
+var cut=txt.length>MAXC;
+T.value=(T.value.trim()?T.value.trim()+'\n\n':'')+txt.slice(0,MAXC);
+msg.textContent='✅ Text added ('+Math.round(Math.min(txt.length,MAXC)/1000)+'K characters)'+(note?' '+note:'')+(cut?' - file was too big, first part only':'')+'.';
+}
+function xmlDoc(s){return new DOMParser().parseFromString(s,'application/xml');}
+function paraText(root,pTag,tTag){
+var out=[],ps=root.getElementsByTagName(pTag);
+for(var i=0;i<ps.length;i++){var ts=ps[i].getElementsByTagName(tTag),t='';for(var j=0;j<ts.length;j++)t+=ts[j].textContent;if(t.trim())out.push(t);}
+return out.join('\n');
+}
+function htmlText(h){
+var d=new DOMParser().parseFromString(h,'text/html');
+['script','style','noscript'].forEach(function(t){var x=d.getElementsByTagName(t);for(var i=x.length-1;i>=0;i--)x[i].remove();});
+var b=d.querySelectorAll('p,div,br,li,h1,h2,h3,h4,h5,h6,tr');for(var i=0;i<b.length;i++)b[i].appendChild(d.createTextNode('\n'));
+return (d.body?d.body.textContent:'').replace(/[ \t]+/g,' ').replace(/\n\s*\n\s*\n+/g,'\n\n').trim();
+}
+var lastDoc=null,lastEnd=0;
+function askPages(n,def){return prompt('This PDF has '+n+' pages.\nWhich page do you want to read?\nExamples:  5   or   10-15   or   3,7,20-25\nLeave empty for the whole book.',def||'');}
+function parsePages(x,n){
+x=(x||'').trim();var a=[],i;
+if(!x){for(i=1;i<=Math.min(n,MAXP);i++)a.push(i);return a;}
+var set={},bad=false;
+x.replace(/[\u2013\u2014]/g,'-').replace(/\s*-\s*/g,'-').split(/[,\s]+/).forEach(function(tk){
+if(!tk)return;
+var m=/^(\d+)(?:-(\d+))?$/.exec(tk);
+if(!m){bad=true;return;}
+var lo=+m[1],hi=m[2]?+m[2]:lo,t;
+if(lo>hi){t=lo;lo=hi;hi=t;}
+if(hi<1||lo>n){bad=true;return;}
+for(var k=Math.max(lo,1);k<=Math.min(hi,n);k++)set[k]=1;
+});
+if(bad)return null;
+a=Object.keys(set).map(Number).sort(function(p,q){return p-q;});
+return a.length?a:null;
+}
+var ocrW=null;
+function getOcr(){
+if(ocrW)return Promise.resolve(ocrW);
+msg.textContent='\u23F3 Scanned PDF: loading text reader (first time needs internet)...';
+return loadScript('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js','Tesseract').then(function(){return window.Tesseract.createWorker('eng');}).then(function(w){ocrW=w;return w;});
+}
+function ocrPage(pg,label){
+return getOcr().then(function(w){
+var vp=pg.getViewport({scale:2}),cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;
+return pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise.then(function(){msg.textContent=label;return w.recognize(cv);}).then(function(r){cv.width=cv.height=0;return ((r&&r.data&&r.data.text)||'').trim();});
+});
+}
+function readPages(doc,list){
+var out=[],i=0,len=0;
+function next(){
+if(i>=list.length||len>MAXC)return Promise.resolve();
+if(i%5===0||i===list.length-1)msg.textContent='⏳ Reading the PDF (page '+list[i]+', '+(i+1)+' of '+list.length+')...';
+return doc.getPage(list[i]).then(function(pg){return pg.getTextContent().then(function(tc){
+var t='';
+tc.items.forEach(function(it){t+=it.str+(it.hasEOL?'\n':' ');});
+t=t.replace(/[ \t]+\n/g,'\n').replace(/ {2,}/g,' ').trim();
+if(t.length>=5)return t;
+return ocrPage(pg,'\u23F3 Scanned PDF: reading page '+list[i]+' ('+(i+1)+' of '+list.length+'), about 10-20 sec per page...');
+}).then(function(t){
+if(t){out.push(t);len+=t.length;}
+lastEnd=list[i];i++;return next();
+});});
+}
+return next().then(function(){return out.join('\n\n');});
+}
+function readPdf(f){
+return loadScript(PDFJS+'pdf.min.js','pdfjsLib').then(function(){
 window.pdfjsLib.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.js';
 return f.arrayBuffer();
 }).then(function(buf){return window.pdfjsLib.getDocument({data:buf}).promise;})
 .then(function(doc){
-var n=Math.min(doc.numPages,60),out=[],i=1;
-function next(){
-if(i>n)return Promise.resolve();
-msg.textContent='\u23F3 Reading the PDF (page '+i+' of '+n+')...';
-return doc.getPage(i).then(function(pg){return pg.getTextContent();}).then(function(tc){
-var t='';
-tc.items.forEach(function(it){t+=it.str+(it.hasEOL?'\n':' ');});
-out.push(t.replace(/[ \t]+\n/g,'\n').replace(/ {2,}/g,' ').trim());
-i++;return next();
+lastDoc=doc;lastEnd=0;
+var n=doc.numPages,ans=askPages(n,'');
+if(ans===null)return Promise.reject('Cancelled.');
+var list=parsePages(ans,n);
+if(!list)return Promise.reject('Invalid page number. This PDF has '+n+' pages. Example: 5 or 10-15 or 3,7,20-25.');
+return readPages(doc,list).then(function(t){return {t:t,note:'(PDF pages: '+(ans.trim()||'all')+' of '+n+')'};});
 });
 }
-return next().then(function(){return {txt:out.filter(Boolean).join('\n\n'),n:doc.numPages,used:n};});
-}).then(function(r){
+$('bpg').onclick=function(){
+if(busy)return;
+if(!lastDoc){msg.textContent='Upload a PDF book first (📄 button). Then you can pick any page here.';return;}
+var n=lastDoc.numPages,ans=askPages(n,lastEnd&&lastEnd<n?String(lastEnd+1):'');
+if(ans===null)return;
+var list=parsePages(ans,n);
+if(!list){msg.textContent='⚠ Invalid page number. This PDF has '+n+' pages. Example: 5 or 10-15 or 3,7,20-25.';return;}
+busy=true;stop();
+readPages(lastDoc,list).then(function(t){
 busy=false;
-if(!r.txt.trim()){msg.textContent='\u26A0 This PDF has no selectable text (it may be a scanned copy), so it cannot be read.';return;}
-closePanel();
-T.value=(T.value.trim()?T.value.trim()+'\n\n':'')+r.txt.slice(0,60000);
-msg.textContent='\u2705 PDF text added'+(r.n>r.used?' (first '+r.used+' pages only)':'')+'.';
-}).catch(function(e){busy=false;msg.textContent='\u26A0 Could not read the PDF. '+(typeof e==='string'?e:'Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.');});
+if(!t.trim()){msg.textContent='⚠ No readable text on those pages (a scanned page has only pictures).';return;}
+closePanel();T.value=t.slice(0,MAXC);
+msg.textContent='✅ Page '+(ans.trim()||'all')+' loaded (PDF has '+n+' pages). Tap 📖 again for the next page.';
+}).catch(function(){busy=false;msg.textContent='⚠ Could not read those pages.';});
+};
+function readZip(f,kind){
+return loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js','JSZip').then(function(){return f.arrayBuffer();})
+.then(function(b){return window.JSZip.loadAsync(b);}).then(function(z){
+var names=Object.keys(z.files);
+function rd(n){return z.file(n).async('string');}
+function seq(list,fn){var out=[],p=Promise.resolve();list.forEach(function(n){p=p.then(function(){return rd(n).then(function(s){out.push(fn(s));});});});return p.then(function(){return out;});}
+if(kind==='docx'){return rd('word/document.xml').then(function(s){return paraText(xmlDoc(s),'w:p','w:t');});}
+if(kind==='pptx'){
+var sl=names.filter(function(n){return /^ppt\/slides\/slide\d+\.xml$/.test(n);}).sort(function(a,b){return parseInt(a.match(/(\d+)\.xml/)[1])-parseInt(b.match(/(\d+)\.xml/)[1]);});
+return seq(sl,function(s){return paraText(xmlDoc(s),'a:p','a:t');}).then(function(a){return a.join('\n\n');});
+}
+var pages=names.filter(function(n){return /\.(xhtml|html|htm)$/i.test(n);}).sort();
+var cp=z.file('META-INF/container.xml')?rd('META-INF/container.xml'):Promise.resolve('');
+return cp.then(function(c){
+var m=c.match(/full-path="([^"]+)"/);if(!m||!z.file(m[1]))return pages;
+var base=m[1].indexOf('/')>=0?m[1].replace(/[^\/]+$/,''):'';
+return rd(m[1]).then(function(o){
+var d=xmlDoc(o),man={},it=d.getElementsByTagName('item'),sp=d.getElementsByTagName('itemref'),l=[];
+for(var i=0;i<it.length;i++)man[it[i].getAttribute('id')]=it[i].getAttribute('href');
+for(var j=0;j<sp.length;j++){var h=man[sp[j].getAttribute('idref')];if(h){h=decodeURIComponent(base+h);if(z.file(h))l.push(h);}}
+return l.length?l:pages;
+});
+}).then(function(l){return seq(l,htmlText);}).then(function(a){return a.filter(Boolean).join('\n\n');});
+});
+}
+function readImg(f){
+msg.textContent='⏳ Loading text reader for picture (first time needs internet)...';
+return loadScript('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js','Tesseract').then(function(){
+return window.Tesseract.recognize(f,'eng+urd',{logger:function(m){if(m&&m.status==='recognizing text')msg.textContent='⏳ Reading picture text: '+Math.round(m.progress*100)+'%';}});
+}).then(function(r){return r.data.text;});
+}
+$('pdf').onchange=function(){
+var f=this.files&&this.files[0];this.value='';
+if(!f||busy)return;
+busy=true;msg.textContent='⏳ Reading the file...';
+var nm=(f.name||'').toLowerCase(),ty=f.type||'',p,note='';
+if(ty==='application/pdf'||/\.pdf$/.test(nm))p=readPdf(f).then(function(r){note=r.note;return r.t;});
+else if(/\.docx$/.test(nm))p=readZip(f,'docx');
+else if(/\.pptx$/.test(nm))p=readZip(f,'pptx');
+else if(/\.epub$/.test(nm))p=readZip(f,'epub');
+else if(/^image\//.test(ty)||/\.(png|jpe?g|webp|bmp|gif)$/.test(nm))p=readImg(f);
+else if(/\.(html?|xhtml)$/.test(nm)||ty==='text/html')p=f.text().then(htmlText);
+else if(/\.(doc|ppt|xls|xlsx|zip|rar|mp3|mp4|apk|exe)$/.test(nm))p=Promise.reject('This file type is not supported. Use PDF, DOCX, PPTX, EPUB, TXT, HTML or a picture.');
+else p=f.text().then(function(s){return /\.rtf$/.test(nm)?s.replace(/\\par[d]?/g,'\n').replace(/\\'[0-9a-f]{2}/gi,'').replace(/\\[a-z]+-?\d* ?/gi,'').replace(/[{}]/g,''):s;});
+p.then(function(t){fdone(t,note);}).catch(function(e){busy=false;msg.textContent=(e==='Cancelled.')?'Cancelled.':'⚠ Could not read the file. '+(typeof e==='string'&&e!=='script'?e:'Check your internet and try again.');});
 };
 /* Mic typing */
 var rec=null,micOn=false;
@@ -1007,6 +1198,83 @@ out.appendChild(actBtns(function(){return 'My Teacher - Summary\n\n'+x;},'My Tea
 };
 qb.appendChild(go);qb.appendChild(st);qb.appendChild(out);
 }
+/* ---- Study Pack: short questions + definitions + MCQs + PDF ---- */
+function qPack(){
+qb.innerHTML='';qb.dir='auto';qb.scrollTop=0;
+var src=T.value.trim();
+if(!src){qb.appendChild(el('h2','','Study Pack'));noSrc();return;}
+var ctl=el('div','np');
+ctl.appendChild(el('h2','','Study Pack'));
+ctl.appendChild(el('div','qf','Text: '+src.slice(0,140).replace(/\s+/g,' ')+(src.length>140?'...':'')));
+var cnt=[['0','None'],['5','5'],['10','10'],['15','15'],['20','20']];
+ctl.appendChild(el('label','','Short questions (with answers)'));
+var sN=selBox(cnt,'10');ctl.appendChild(sN);
+ctl.appendChild(el('label','','Definitions (key terms)'));
+var dN=selBox(cnt,'10');ctl.appendChild(dN);
+ctl.appendChild(el('label','','MCQs'));
+var mN=selBox(cnt,'10');ctl.appendChild(mN);
+ctl.appendChild(el('label','','Level'));
+var lS=selBox([['easy','Easy'],['medium','Medium'],['hard','Hard']],'medium');ctl.appendChild(lS);
+var go=el('button','','Make Study Pack'),st=el('div','m np','');
+st.style.marginTop='.8rem';
+ctl.appendChild(go);ctl.appendChild(st);
+var tg=el('div','np'),out=el('div',''),act=el('div','np');
+out.dir='auto';
+var cb=document.createElement('input');cb.type='checkbox';cb.checked=true;
+var cbl=el('label','tc','');cbl.appendChild(cb);cbl.appendChild(document.createTextNode('Show answers (short questions and MCQs) - untick to print a question paper'));
+cb.onchange=function(){out.classList.toggle('noans',!cb.checked);};
+qb.appendChild(ctl);qb.appendChild(tg);qb.appendChild(out);qb.appendChild(act);
+go.onclick=function(){
+if(busy)return;
+var ns=+sN.value,nd=+dN.value,nm=+mN.value;
+if(!ns&&!nd&&!nm){st.textContent='Choose at least one type.';return;}
+busy=true;tgt=curLang();go.disabled=true;out.innerHTML='';act.innerHTML='';tg.innerHTML='';
+cb.checked=true;out.classList.remove('noans');
+var lang=tgt?tgt.n:'the same language as the text',lv=lS.value,data={},fails=[],steps=[];
+var tail=' Write in '+lang+'. Return ONLY a JSON array with no markdown and no extra text.';
+if(ns)steps.push({k:'s',label:'short questions',sys:'You are a teacher. Create exactly '+ns+' short-answer exam questions of '+lv+' difficulty from the text. Each answer must be 1 to 3 sentences.'+tail+' Format: [{"q":"question","a":"short answer"}]',ok:function(x){return x.filter(function(r){return r&&typeof r.q==='string'&&typeof r.a==='string';});}});
+if(nd)steps.push({k:'d',label:'definitions',sys:'You are a teacher. Pick exactly '+nd+' important terms from the text and define each clearly in one or two sentences ('+lv+' level).'+tail+' Format: [{"t":"term","d":"definition"}]',ok:function(x){return x.filter(function(r){return r&&typeof r.t==='string'&&typeof r.d==='string';});}});
+if(nm)steps.push({k:'m',label:'MCQs',sys:'You are a teacher. Create exactly '+nm+' multiple-choice questions of '+lv+' difficulty from the text, with 4 options each.'+tail+' Format: [{"q":"question","o":["option A","option B","option C","option D"],"a":0,"w":"one short sentence explaining the answer"}] where a is the index (0 to 3) of the correct option.',ok:function(x){return x.filter(function(q){return q&&typeof q.q==='string'&&Array.isArray(q.o)&&q.o.length>1&&Number.isInteger(q.a)&&q.a>=0&&q.a<q.o.length;});}});
+var p=Promise.resolve();
+steps.forEach(function(z){
+p=p.then(function(){
+st.textContent='\u23F3 Teacher is preparing '+z.label+'...';
+return aiText(z.sys,src.slice(0,6000),120000).then(function(x){var a=z.ok(jparse(x,'[',']'));if(!a.length)throw 0;data[z.k]=a;}).catch(function(){fails.push(z.label);});
+});
+});
+function L(i){return String.fromCharCode(65+i);}
+function render(){
+out.innerHTML='';
+out.appendChild(el('h2','','My Teacher - Study Pack'));
+out.appendChild(el('div','qf',new Date().toLocaleDateString()+'  |  '+src.split('\n')[0].slice(0,80)));
+if(data.s){out.appendChild(el('h2','','Short Questions'));data.s.forEach(function(r,i){var d=el('div','rv');d.appendChild(el('b','','Q'+(i+1)+'. '+r.q));d.appendChild(el('div','ans','Answer: '+r.a));out.appendChild(d);});}
+if(data.d){out.appendChild(el('h2','','Definitions'));data.d.forEach(function(r,i){var d=el('div','rv');d.appendChild(el('b','',(i+1)+'. '+r.t));d.appendChild(el('div','',r.d));out.appendChild(d);});}
+if(data.m){out.appendChild(el('h2','','MCQs'));data.m.forEach(function(q,i){var d=el('div','rv');d.appendChild(el('b','','Q'+(i+1)+'. '+q.q));q.o.forEach(function(o,k){d.appendChild(el('div','opl',L(k)+') '+o));});d.appendChild(el('div','ans','Answer: '+L(q.a)+') '+q.o[q.a]+(q.w?'  -  '+q.w:'')));out.appendChild(d);});}
+}
+function txt(){
+var T0=['My Teacher - Study Pack',new Date().toLocaleDateString(),''],a=cb.checked;
+if(data.s){T0.push('SHORT QUESTIONS','');data.s.forEach(function(r,i){T0.push('Q'+(i+1)+'. '+r.q);if(a)T0.push('Answer: '+r.a);T0.push('');});}
+if(data.d){T0.push('DEFINITIONS','');data.d.forEach(function(r,i){T0.push((i+1)+'. '+r.t+': '+r.d);});T0.push('');}
+if(data.m){T0.push('MCQs','');data.m.forEach(function(q,i){T0.push('Q'+(i+1)+'. '+q.q);q.o.forEach(function(o,k){T0.push(L(k)+') '+o);});if(a)T0.push('Answer: '+L(q.a)+') '+q.o[q.a]);T0.push('');});}
+return T0.join('\n');
+}
+p.then(function(){
+busy=false;go.disabled=false;
+if(!data.s&&!data.d&&!data.m){st.textContent='\u26A0 Could not make the Study Pack. Check your internet. If it keeps failing, add a free AI key with the \uD83D\uDD11 button.';return;}
+st.textContent=fails.length?'\u26A0 Could not make: '+fails.join(', ')+'. Tap Make again to retry.':'';
+go.textContent='Make again';
+render();tg.appendChild(cbl);
+var st2=el('div','m np'),sv=el('button','s','\uD83D\uDCBE Save to Notes');
+st2.style.marginTop='.8rem';
+sv.onclick=function(){var sub=askSub(lastSub());if(sub===null)return;st2.textContent=saveNote('Study Pack: '+src.split('\n')[0],txt(),sub)?'\u2705 Saved to Notes ('+sub+').':'\u26A0 Could not save (storage is full or blocked).';};
+act.appendChild(actBtns(txt,'My Teacher - Study Pack'));act.appendChild(sv);act.appendChild(st2);
+out.scrollIntoView({block:'start'});
+});
+};
+}
+$('bfs').onclick=function(){var on=TW.classList.toggle('big');document.body.classList.toggle('tbig',on);this.textContent=on?'\u2715':'\u26F6';this.title=on?'Small screen':'Full screen';if(on)T.focus();};
+$('bfs2').onclick=function(){if(V.style.display==='block'){document.body.classList.toggle('fs');}else{$('bfs').click();}};
+$('bpk').onclick=function(){stop();qOpen('pack','Study Pack');qPack();};
 $('bcd').onclick=function(){stop();qOpen('cards','Flashcards');qCards();};
 $('bhs').onclick=function(){stop();qOpen('progress','Progress');qHist();};
 $('bsm').onclick=function(){stop();qOpen('summary','Summary');qSum();};
@@ -1230,8 +1498,22 @@ $('pause').onclick=function(){
 if(onl&&au&&!paused){au.pause();paused=true;unwake();talk(false);}
 else if(S.speaking&&!paused){rp=lp;sid++;clr();S.cancel();paused=true;pf=true;unwake();talk(false);msg.textContent='\u23F8 Paused. Tap Play to continue.';}
 };
-function stop(){sid++;clr();stopOnline();S.cancel();paused=false;unwake();talk(false);show(false);msg.textContent='';}
+function stop(){SEC=null;sid++;clr();stopOnline();S.cancel();paused=false;unwake();talk(false);show(false);msg.textContent='';}
 $('stop').onclick=stop;
+(function(){
+var b=document.createElement('button');b.id='rsel';b.type='button';b.textContent='\uD83C\uDFA7 Read selected';
+b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:9999;display:none;padding:12px 20px;border:0;border-radius:24px;background:#1a73e8;color:#fff;font-size:16px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.35)';
+document.body.appendChild(b);
+function chk(){var s=T.selectionStart,e=T.selectionEnd;var on=e-s>0&&T.value.slice(s,e).trim().length>0&&TW.style.display!=='none';b.style.display=on?'block':'none';}
+['select','keyup','mouseup','touchend','input'].forEach(function(ev){T.addEventListener(ev,function(){setTimeout(chk,80);});});
+document.addEventListener('selectionchange',function(){setTimeout(chk,80);});
+function readNow(all){var s=T.selectionStart,e=T.selectionEnd,x=(e>s?T.value.slice(s,e):(all?T.value:'')).trim();if(!x)return;b.style.display='none';stop();forceOnl=navigator.onLine;forceTxt=x;try{$('play').onclick();}finally{forceTxt=null;}}
+b.addEventListener('mousedown',function(e){e.preventDefault();});
+b.addEventListener('click',function(){readNow(false);});
+var bsp=$('bsp');
+bsp.addEventListener('mousedown',function(e){e.preventDefault();});
+bsp.addEventListener('click',function(){readNow(true);});
+})();
 V.onclick=function(e){
 var d=e.target.closest?e.target.closest('.p'):null;
 if(!d)return;
