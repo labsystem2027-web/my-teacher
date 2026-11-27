@@ -199,16 +199,20 @@ function esc(x){return x.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&
 function show(on){document.body.classList.toggle('fs',!!on);V.style.display=on?'block':'none';TW.style.display=on?'none':'flex';pn.style.display='none';}
 function clr(){if(tm){clearTimeout(tm);tm=null;}}
 var wl=null,wlOn=false;
+var KA=null,lastMode='auto';
+function kaOn(){try{if(!KA){KA=new Audio('data:audio/wav;base64,UklGRsQPAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YaAPAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA');KA.loop=true;}var p=KA.play();if(p&&p.catch)p.catch(function(){});}catch(e){}}
+function kaOff(){try{if(KA)KA.pause();}catch(e){}}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState!=='visible'||!wlOn||paused||onl)return;setTimeout(function(){try{if(wlOn&&!paused&&!onl&&!S.speaking&&!S.pending){run(lastMode,0,(typeof lp==='number'?lp:(cur?cur.s:0)));}}catch(e){}},500);});
 var nsV=null;
 function nsOn(){try{if(!nsV){nsV=document.createElement('video');nsV.setAttribute('playsinline','');nsV.setAttribute('muted','');nsV.muted=true;nsV.loop=true;nsV.style.cssText='position:fixed;width:1px;height:1px;opacity:0.01;pointer-events:none;left:0;top:0';
 var W='data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAHiEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHYTbuMU6uEElTDZ1OsggEeTbuMU6uEHFO7a1OsggHM7AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmsirXsYMPQkBNgI1MYXZmNjAuMTYuMTAwV0GNTGF2ZjYwLjE2LjEwMESJiECPQAAAAAAAFlSua8GuAQAAAAAAADjXgQFzxYhNVSpNr/7rf5yBACK1nIN1bmSIgQCGhVZfVlA4g4EBI+ODhDuaygDgibCBELqBEJqBAhJUw2f8c3OgY8CAZ8iaRaOHRU5DT0RFUkSHjUxhdmY2MC4xNi4xMDBzc9ZjwItjxYhNVSpNr/7rf2fIoUWjh0VOQ09ERVJEh5RMYXZjNjAuMzEuMTAyIGxpYnZweGfIoUWjiERVUkFUSU9ORIeTMDA6MDA6MDEuMDAwMDAwMDAwAB9DtnWo54EAo6OBAACAEAIAnQEqEAAQAABHCIWFiJmEiAICAAwNYAD+/6tQgBxTu2uRu4+zgQC3iveBAfGCAZ/wgQM=',M='data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAMTbW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAAA+gAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAj10cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAA+gAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAABAAAAAQAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAPoAAAAAAABAAAAAAG1bWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAABAAAAAQABVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAABYG1pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAASBzdGJsAAAAvHN0c2QAAAAAAAAAAQAAAKxhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAABAAEABIAAAASAAAAAAAAAABFUxhdmM2MC4zMS4xMDIgbGlieDI2NAAAAAAAAAAAAAAAGP//AAAAMmF2Y0MBZAAK/+EAF2dkAAqs2V7ARAAAAwAEAAADAAg8SJZYAQAEaO+8sP34+AAAAAAQcGFzcAAAAAEAAAABAAAAFGJ0cnQAAAAAAAAWiAAAFogAAAAYc3R0cwAAAAAAAAABAAAAAQAAQAAAAAAcc3RzYwAAAAAAAAABAAAAAQAAAAEAAAABAAAAFHN0c3oAAAAAAAAC0QAAAAEAAAAUc3RjbwAAAAAAAAABAAADQwAAAGJ1ZHRhAAAAWm1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAALWlsc3QAAAAlqXRvbwAAAB1kYXRhAAAAAQAAAABMYXZmNjAuMTYuMTAwAAAACGZyZWUAAALZbWRhdAAAArcGBf//s9xF6b3m2Ui3lizYINkj7u94MjY0IC0gY29yZSAxNjQgcjMxMDggMzFlMTlmOSAtIEguMjY0L01QRUctNCBBVkMgY29kZWMgLSBDb3B5bGVmdCAyMDAzLTIwMjMgLSBodHRwOi8vd3d3LnZpZGVvbGFuLm9yZy94MjY0Lmh0bWwgLSBvcHRpb25zOiBjYWJhYz0xIHJlZj0xIGRlYmxvY2s9MTowOjAgYW5hbHlzZT0weDM6MHgzIG1lPWhleCBzdWJtZT0yIHBzeT0xIHBzeV9yZD0xLjAwOjAuMDAgbWl4ZWRfcmVmPTAgbWVfcmFuZ2U9MTYgY2hyb21hX21lPTEgdHJlbGxpcz0wIDh4OGRjdD0xIGNxbT0wIGRlYWR6b25lPTIxLDExIGZhc3RfcHNraXA9MSBjaHJvbWFfcXBfb2Zmc2V0PTAgdGhyZWFkcz0xIGxvb2thaGVhZF90aHJlYWRzPTEgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNlZD0wIGJsdXJheV9jb21wYXQ9MCBzdGl0Y2hhYmxlPTEgY29uc3RyYWluZWRfaW50cmE9MCBiZnJhbWVzPTMgYl9weXJhbWlkPTIgYl9hZGFwdD0xIGJfYmlhcz0wIGRpcmVjdD0xIHdlaWdodGI9MSBvcGVuX2dvcD0wIHdlaWdodHA9MSBrZXlpbnQ9MjUwIGtleWludF9taW49MSBzY2VuZWN1dD00MCBpbnRyYV9yZWZyZXNoPTAgcmNfbG9va2FoZWFkPTEwIHJjPWNyZiBtYnRyZWU9MSBjcmY9MjMuMCBxY29tcD0wLjYwIHFwbWluPTAgcXBtYXg9NjkgcXBzdGVwPTQgaXBfcmF0aW89MS40MCBhcT0xOjEuMDAAgAAAABJliIQAGP/q/8JVP72zdFxF//E=';
 nsV.src=(nsV.canPlayType&&nsV.canPlayType('video/webm')?W:M);document.body.appendChild(nsV);}
 var p=nsV.play();if(p&&p.catch)p.catch(function(){});}catch(e){}}
 function nsOff(){try{if(nsV)nsV.pause();}catch(e){}}
-function wake(){wlOn=true;msOn(true);if(!navigator.wakeLock)nsOn();if(navigator.wakeLock&&!wl&&document.visibilityState==='visible'){navigator.wakeLock.request('screen').then(function(l){wl=l;l.addEventListener('release',function(){wl=null;if(wlOn&&document.visibilityState==='visible')setTimeout(wake,300);});}).catch(function(){setTimeout(function(){if(wlOn&&!wl)wake();},2000);});}}
+function wake(){wlOn=true;msOn(true);kaOn();if(!navigator.wakeLock)nsOn();if(navigator.wakeLock&&!wl&&document.visibilityState==='visible'){navigator.wakeLock.request('screen').then(function(l){wl=l;l.addEventListener('release',function(){wl=null;if(wlOn&&document.visibilityState==='visible')setTimeout(wake,300);});}).catch(function(){setTimeout(function(){if(wlOn&&!wl)wake();},2000);});}}
 function msOn(on){if(!('mediaSession' in navigator))return;try{if(on){navigator.mediaSession.metadata=new MediaMetadata({title:'My Teacher',artist:'Reading'});navigator.mediaSession.playbackState='playing';navigator.mediaSession.setActionHandler('pause',function(){var b=$('pause');if(b)b.click();});navigator.mediaSession.setActionHandler('play',function(){var b=$('play');if(b)b.click();});navigator.mediaSession.setActionHandler('stop',function(){var b=$('stop');if(b)b.click();});}else{navigator.mediaSession.playbackState='none';}}catch(e){}}
 document.addEventListener('touchstart',function(){if(wlOn&&!wl)wake();},{passive:true});
-function unwake(){wlOn=false;msOn(false);nsOff();if(wl){wl.release().catch(function(){});wl=null;}}
+function unwake(){wlOn=false;msOn(false);nsOff();kaOff();if(wl){wl.release().catch(function(){});wl=null;}}
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&wlOn)wake();});
 function talk(on){var a=$('av');if(a)a.classList.toggle('talk',!!on);}
 var au=null,onl=false,tick=null,SA=null;
@@ -274,7 +278,8 @@ fbUsed=true;code=fb;pre={};bv=0;
 fbName=LANGS.filter(function(l){return l.tl===fb})[0].n;
 play(ix,0);return;
 }
-unwake();msg.textContent='\u2139 No voice is available for '+(tgt?tgt.n:'this language')+'. The text is shown on screen.';
+if(window.speechSynthesis&&!onlFailed){onlFailed=true;forceOnl=false;msg.textContent='\u2139 Online voice is not working, trying device voice...';var b2=cs[ix].s;setTimeout(function(){run('auto',0,b2);},50);return;}
+unwake();msg.textContent='\u2139 No voice is available for '+(tgt?tgt.n:'this language')+'. The text is shown on screen.'+(a.error?' (error '+a.error.code+')':'');
 };
 var pr=a.play();
 if(pr&&pr.catch)pr.catch(function(e){if(my===sid&&au===a&&e&&e.name==='NotAllowedError'){unwake();msg.textContent='\u2139 Tap Play again to start the voice.';}});
@@ -332,7 +337,7 @@ if(txt.slice(st,e).trim())out.push({s:st,e:e});
 return out;
 }
 function run(mode,tries,base){
-var my=++sid;clr();stopOnline();S.cancel();paused=false;wake();
+var my=++sid;lastMode=mode;clr();stopOnline();S.cancel();paused=false;wake();
 var txt=orig_.replace(/[#*_`>~|]/g,' '),cs=chunks(txt,base);
 if(!cs.length){show(false);return;}
 paras=[];var rx=/[^\n]+/g,mm;
@@ -380,7 +385,7 @@ u.onerror=function(e){
 if(my!==sid)return;
 if(e.error==='interrupted'||e.error==='canceled')return;
 clr();
-if(tgt){S.cancel();setTimeout(function(){run('online',0,c.s)},100);return;}
+if(tgt&&!onlFailed){S.cancel();setTimeout(function(){run('online',0,c.s)},100);return;}
 var nx=mode==='sel'?'auto':(mode==='auto'?'def':'');
 if(nx&&tries<2){S.cancel();setTimeout(function(){run(nx,tries+1,c.s)},150);return;}
 sid++;unwake();talk(false);
@@ -389,7 +394,7 @@ msg.textContent='\u2139 Voice could not start ('+e.error+'). Pick "Online voice"
 S.speak(u);
 }
 mk(0);mk(1);
-if(tgt)setTimeout(function(){if(my===sid&&!started&&!paused)run('online',0,base);},5000);
+if(tgt&&!onlFailed)setTimeout(function(){if(my===sid&&!started&&!paused)run('online',0,base);},5000);
 },120);
 }
 var cache={},busy=false;
@@ -459,7 +464,7 @@ return piece(t.q,tl).then(function(x){res[t.li][t.pi]=x;}).then(worker);
 var ws=[];for(var k=0;k<4;k++)ws.push(worker());
 return Promise.all(ws).then(function(){return res.map(function(a){return a.join(' ')}).join('\n')});
 }
-var forceOnl=false;
+var forceOnl=false,onlFailed=false;
 function mode(){if(forceOnl)return 'online';return sel.value==='-2'?'auto':(sel.value==='-1'?'def':(sel.value==='-3'?'online':'sel'));}
 function teach(o,L){
 var lang=L?L.n:'the same language as the text';
@@ -470,7 +475,7 @@ var forceTxt=null;
 $('play').onclick=function(){
 if(micOn&&rec){rec.stop();}
 if(paused){if(onl&&au){au.play();paused=false;wake();talk(true);return;}paused=false;run(mode(),0,rp);return;}
-if(forceTxt===null)forceOnl=false;
+onlFailed=false;if(forceTxt===null)forceOnl=false;
 var o=(forceTxt!==null?forceTxt:T.value).trim();if(!o||busy)return;
 window.scrollTo(0,0);
 tgt=curLang();
